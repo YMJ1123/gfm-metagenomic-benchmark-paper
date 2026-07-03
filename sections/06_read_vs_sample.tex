@@ -30,7 +30,7 @@ pool (9$\times$10K reads). Higher read accuracy tracks better abundance
 fidelity, but even a 67\%-accurate model attains $r=0.99$. Genus-balancing
 (bottom row) is counterproductive.}
 \label{tab:sample}
-\begin{tabularx}{\columnwidth}{@{}Xccc@{}}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lccc@{}}
 \toprule
 Model & Read acc.\ & Pearson $r$ & Bray--Curtis \\
 \midrule
@@ -41,7 +41,7 @@ NT-v2 6-mer (250M warm)  & 67.3\% & 0.993 & 0.098 \\
 MT 6-mer (scratch)       & 48.9\% & 0.989 & 0.171 \\
 NT-v2 genus-balanced     & 37.2\% & 0.862 & 0.420 \\
 \botrule
-\end{tabularx}
+\end{tabular*}
 \end{table}
 
 \begin{figure*}[t]
@@ -79,7 +79,7 @@ single answer: it depends on whether the downstream question is \emph{how much}
 Kraken\,2 dominates low-abundance detection. Sens@95 = sensitivity at 95\%
 specificity.}
 \label{tab:kraken}
-\begin{tabularx}{\textwidth}{@{}Xccccc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccccc@{}}
 \toprule
 Model & Read acc.\ & Pearson $r$ & Bray--Curtis & ROC AUC & Sens@95 \\
 \midrule
@@ -88,7 +88,7 @@ NT-v2 6-mer          & 68.9\% & 0.992 & 0.116 & 0.681 & 17.5\% \\
 Kraken\,2 ($k{=}35$) & 77.7\% & 0.823 & 0.126 & \textbf{0.966} & \textbf{93.5\%} \\
 MT 6-mer             & 51.5\% & 0.983 & 0.177 & 0.576 & 9.2\% \\
 \botrule
-\end{tabularx}
+\end{tabular*}
 \end{table*}
 
 \begin{figure}[t]

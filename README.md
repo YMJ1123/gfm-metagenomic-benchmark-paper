@@ -49,18 +49,24 @@ oup-abbrvnat.bst             OUP author–year 引用樣式（備用）
 
 本機（Nano4）無 TeX，用以下任一：
 
+> ⚠️ **務必用 TeX Live 2024（不要用 2026/latest）**。OUP 官方 class 依賴
+> `arydshln`，而它被 TeX Live 2026 的新 LaTeX kernel 弄壞——**連 OUP 自己的
+> 範例在 2026 都編不過**。TeX Live 2024 可乾淨編譯（已實測 main/supplementary/
+> cover_letter 全部 exit 0、引用與交叉參照全解析），且與 Overleaf 投稿環境一致。
+
 ### GitHub Action（推薦，push 後自動出 PDF）
-push 到 GitHub 後，Actions 會自動編譯 `main.tex` / `supplementary.tex` /
-`cover_letter.tex`，在該次 run 的 **Artifacts** 下載 `manuscript-pdfs`。
+`.github/workflows/build.yml` 已釘 `texlive_version: 2024`。push 到 GitHub 後
+Actions 自動編譯三份文件，在該次 run 的 **Artifacts** 下載 `manuscript-pdfs`。
 
 ### Overleaf
-上傳整個 repo → 主文件設為 `main.tex` → 編譯器選 **pdfLaTeX**（會自動跑 bibtex）。
+上傳整個 repo → 主文件設 `main.tex` → 編譯器選 **pdfLaTeX** →
+**Menu → Settings → TeX Live version 選 2024**（重要，否則會踩到上面的 bug）。
 
-### 本機 / 有 TeX Live 時
+### 本機 / 有 TeX Live 2024 時
 ```bash
 latexmk -pdf main.tex
 latexmk -pdf supplementary.tex
-pdflatex cover_letter.tex
+latexmk -pdf cover_letter.tex
 ```
 
 ## 投稿前務必補齊（檔案內以 `[...]` / `First Author` / `0000-...` 標出）

@@ -40,7 +40,7 @@ trained from scratch; NT-v2 is pre-trained. Only overlapping 13-mer reaches the
 high-80s/90s and continues to improve from 50M to 250M reads, whereas 6-mer
 representations plateau at 45--67\% regardless of pre-training or data.}
 \label{tab:tok}
-\begin{tabularx}{\textwidth}{@{}Xll cc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllcc@{}}
 \toprule
 Tokenizer & Overlap & Model & 50M & 250M \\
 \midrule
@@ -50,7 +50,7 @@ Tokenizer & Overlap & Model & 50M & 250M \\
 6-mer  & non-overlap (stride 6)  & MT (scratch)      & 47.00\% & 45.0\% \\
 6-mer  & non-overlap             & NT-v2 (pre-trained)& 67.07\% & 67.29\% \\
 \botrule
-\end{tabularx}
+\end{tabular*}
 \end{table*}
 
 Critically, tokenization also governs \emph{scalability}. As data grows from

@@ -15,10 +15,15 @@
 % --- extra packages not already provided by the class ---
 % (class already loads: graphicx, caption, amsmath, amssymb, array, xcolor,
 %  natbib, multirow, url, hyperref, tikz)
-\usepackage{tabularx}
+% NB: tables use the class's tabular*/\toprule/\botrule house style, not
+% tabularx (tabularx is incompatible with the class's rule macros).
 \usetikzlibrary{arrows.meta,positioning}
 
 \graphicspath{{figures/}}
+
+% The OUP class defaults the running-head society logo to a PNAS Nexus image
+% that is not shipped with the bundle; blank it out (documented in the class).
+\def\societylogo{}
 
 % colour used by the Figure 1 schematic
 \definecolor{bibblue}{RGB}{0,63,114}
