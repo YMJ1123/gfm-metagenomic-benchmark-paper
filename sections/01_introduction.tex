@@ -1,0 +1,67 @@
+\section{Introduction}
+\label{sec:intro}
+
+Metagenomic taxonomic classification---assigning each sequencing read to the
+organism it originated from---is a foundational step in microbiome analysis,
+underpinning studies of community composition, host--microbe interaction, and
+clinical diagnostics \citep{Quince2017,HMP2012}. The dominant production tools
+are alignment-free $k$-mer methods such as Kraken\,2 and Centrifuge, which match
+long exact $k$-mers ($k\approx 31$--$35$) against a reference database and are
+fast, accurate, and interpretable when the target organism is well represented
+in that database \citep{Wood2019,Kim2016}. Their weaknesses are equally
+well established: performance degrades sharply on organisms absent from or
+poorly covered by the reference, and exact-match indexing cannot exploit the
+distributional structure of sequence that a learned model can
+\citep{Ye2019,Breitwieser2019,McIntyre2017}.
+
+In parallel, genomic foundation models (GFMs)---large self-supervised
+transformers pre-trained on genomic sequence---have advanced rapidly, with
+Nucleotide Transformer, DNABERT/DNABERT-2, HyenaDNA, Caduceus, and Evo
+demonstrating strong transfer to regulatory, variant-effect, and
+genome-design tasks \citep{DallaTorre2023,Ji2021,Zhou2024dnabert2,
+Nguyen2023hyena,Schiff2024caduceus,Nguyen2024,Brixi2025}. This success invites
+an obvious question for the microbiome community: \emph{can, and should, GFMs be
+used for metagenomic short-read taxonomic classification?} The setting is
+adversarial for a foundation model. Reads are short ($\sim$150\,bp), the
+taxonomic signal per read is faint, the label space is large and
+long-tailed, and most GFMs were pre-trained on eukaryotic (often
+human) genomes rather than the bacterial and archaeal diversity that
+dominates real communities. Prior neural approaches such as DeepMicrobes,
+BERTax, and MetaTransformer show that learned read classifiers are feasible
+\citep{Liang2020,Mock2022bertax,Wichmann2023}, but they do not isolate
+\emph{why} they work, and they predate the current generation of large
+pre-trained backbones.
+
+The practical decision facing a method developer is therefore not ``does a
+GFM work at all'' but ``which design choice actually matters''. A GFM-based
+classifier is defined by at least four largely independent axes: (i) how much
+data it is trained on; (ii) whether the backbone is pre-trained or trained
+from scratch; (iii) how the sequence is tokenized (the $k$-mer length and
+whether tokens overlap); and (iv) the level at which the output is
+evaluated---per read, or aggregated to a sample-level community profile.
+These axes are usually entangled in published comparisons, so a reader cannot
+tell whether a reported gain comes from a bigger model, more data, or a
+different tokenizer. A recent study of tokenizer choice in genomic language
+models \citep{Lindsey2025tokenizer} underscores that this axis alone can
+dominate, but its effect has not been quantified against pre-training and data
+scale in the metagenomic read-classification setting.
+
+This paper answers the methodological question head-on with a controlled
+benchmark that changes \emph{one factor at a time}. Holding architecture,
+training data, and evaluation protocol fixed, we separately measure the effect
+of data scale, pre-training, and tokenization, and we evaluate both at the
+read level and at the sample level against Kraken\,2. Our central finding is
+that the axis most often left unexamined---tokenization---is the one that sets
+the performance ceiling, while data scaling helps only until that ceiling is
+reached and pre-training contributes a smaller but real gain once tokenization
+is fixed. We then translate these findings into concrete, use-case-specific
+recommendations for practitioners and for the design of the next generation of
+microbial foundation models. Sections are organized as a problem-solving
+protocol: we first explain why the task is hard
+(Section~\ref{sec:challenges}), describe a leakage-controlled benchmark and a
+dual read/sample evaluation (Section~\ref{sec:design}), then present the data
+scaling (Section~\ref{sec:scaling}), pre-training-versus-tokenization
+(Section~\ref{sec:decomp}), and read-versus-sample (Section~\ref{sec:sample})
+results, before giving practical recommendations
+(Section~\ref{sec:recommendations}) and limitations
+(Section~\ref{sec:limitations}).

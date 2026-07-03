@@ -1,0 +1,101 @@
+\section{Benchmark design and evaluation protocol}
+\label{sec:design}
+
+\subsection{Data generation and leakage control}
+
+Reads were simulated from a unified catalogue of human-gut reference genomes
+\citep{Almeida2019} spanning 120 genera and 1{,}535 species, following the
+read-simulation protocol of MetaTransformer \citep{Wichmann2023} with the ART
+Illumina simulator \citep{Huang2012} at 150\,bp. The natural abundance
+distribution is heavy-tailed (the most abundant genus, \emph{Collinsella},
+accounts for 22.8\% of reads), which we retain to reflect realistic conditions
+rather than an artificially uniform benchmark.
+
+A subtlety specific to short-read simulation is that reads are not independent:
+the source pool of 258.67M reads contains only 42.64M \emph{unique} reads
+(6.07$\times$ redundancy), because high-coverage genomes generate overlapping
+fragments. This matters for any data-scaling claim: past a point, adding
+``more reads'' adds mostly repeats, not new information. We therefore report
+scaling against the nominal training-read count while noting the underlying
+unique-read count (50M reads $\rightarrow$ 17.8M unique; 250M $\rightarrow$
+41.9M unique, near the 42.6M source ceiling).
+
+All accuracy is reported on a held-out test pool that is strictly disjoint
+from training at the read level. We use two test pools: a
+\emph{natural-distribution} pool (99{,}742 reads, our primary metric) and a
+harder \emph{leftover} pool as a conservative lower bound. For the Kraken\,2
+comparison we additionally restrict to a database-coverage-matched pool of
+85{,}819 reads whose source species are present in the Kraken\,2 database, so
+that neural models and Kraken\,2 are scored on the same reads
+(Section~\ref{sec:sample}).
+
+\subsection{Models and the one-factor-at-a-time protocol}
+
+The benchmark is organized so that each comparison isolates a single variable
+(Figure~\ref{fig:design}):
+\begin{itemize}\setlength{\itemsep}{2pt}
+  \item \textbf{Data scale} --- the pre-trained NT-v2 backbone (498M
+        parameters) fine-tuned with LoRA \citep{Hu2022} and an
+        attention-pooling classification head, trained on 500K, 5M, 50M, and
+        250M reads with everything else fixed.
+  \item \textbf{Pre-training} --- the 29-layer pre-trained NT-v2 backbone
+        versus a single-layer randomly initialized transformer, both with
+        identical non-overlapping 6-mer tokenization and identical 50M-read
+        data.
+  \item \textbf{Tokenization} --- MetaTransformer-style encoders trained from
+        scratch with 6-, 12-, and 13-mer tokenizers, overlapping (stride 1)
+        versus non-overlapping (stride $=k$), on identical data.
+  \item \textbf{Evaluation level} --- every model scored at the read level and,
+        after aggregation, at the sample level, alongside Kraken\,2
+        \citep{Wood2019}.
+\end{itemize}
+Because the axes are varied independently, the resulting deltas are causal with
+respect to each factor rather than confounded by simultaneous changes in model
+size, data, and tokenizer. Full hyperparameters, LoRA configuration, and
+training commands are given in the Supplementary Material.
+
+\begin{figure*}[t]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    font=\footnotesize,
+    node distance=6mm,
+    box/.style={draw=bibblue,rounded corners=2pt,align=center,
+                inner sep=4pt,fill=bibblue!5},
+    axis/.style={draw=bibblue!70,rounded corners=2pt,align=center,
+                 inner sep=4pt,fill=white},
+    ev/.style={draw=bibblue,rounded corners=2pt,align=center,
+               inner sep=4pt,fill=bibblue!12},
+    ar/.style={-{Latex[length=2mm]},bibblue!80,thick}
+  ]
+  \node[box] (genomes) {Gut genome catalogue\\120 genera / 1{,}535 species};
+  \node[box,right=of genomes] (reads) {ART 150\,bp reads\\(leakage-controlled\\train/test split)};
+  \draw[ar] (genomes) -- (reads);
+
+  % ablation axes
+  \node[axis,above right=2mm and 10mm of reads] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M};
+  \node[axis,below=1.5mm of a1] (a2) {\textbf{Pre-training}\\pretrained vs scratch};
+  \node[axis,below=1.5mm of a2] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap};
+  \draw[ar] (reads.east) -- (a1.west);
+  \draw[ar] (reads.east) -- (a2.west);
+  \draw[ar] (reads.east) -- (a3.west);
+
+  % evaluation
+  \node[ev,right=14mm of a2] (e1) {\textbf{Read-level}\\Top-1 accuracy};
+  \node[ev,above=1.5mm of e1] (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)};
+  \node[ev,below=1.5mm of e1] (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.};
+  \draw[ar] (a1.east) -- (e0.west);
+  \draw[ar] (a2.east) -- (e1.west);
+  \draw[ar] (a3.east) -- (e2.west);
+
+  \node[box,below=6mm of e1] (kraken) {Kraken\,2 baseline\\(coverage-matched pool)};
+  \draw[ar] (e2.south) -- (kraken.north);
+\end{tikzpicture}%
+}
+\caption{\textbf{Benchmark design.} Reads are simulated from a leakage-controlled
+gut-genome catalogue. Three design axes (data scale, pre-training, tokenization)
+are each varied one at a time while the others are held fixed, and every model
+is scored at three evaluation levels---read-level accuracy, sample-level
+abundance, and binary detection---against a coverage-matched Kraken\,2 baseline.}
+\label{fig:design}
+\end{figure*}

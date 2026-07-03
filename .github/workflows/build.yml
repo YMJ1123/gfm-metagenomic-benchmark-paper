@@ -1,0 +1,38 @@
+name: build-manuscript
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compile main manuscript (pdflatex + bibtex)
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          latexmk_use_xelatex: false
+
+      - name: Compile supplementary
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: supplementary.tex
+
+      - name: Compile cover letter
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: cover_letter.tex
+
+      - name: Upload PDFs
+        uses: actions/upload-artifact@v4
+        with:
+          name: manuscript-pdfs
+          path: |
+            main.pdf
+            supplementary.pdf
+            cover_letter.pdf
+          if-no-files-found: error

@@ -1,0 +1,165 @@
+%=======================================================================
+%  SUPPLEMENTARY MATERIAL  (compiles as its own PDF)
+%=======================================================================
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{xcolor}
+\definecolor{bibblue}{RGB}{0,63,114}
+\usepackage[colorlinks=true,allcolors=bibblue]{hyperref}
+
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thesection}{S\arabic{section}}
+
+\title{\bfseries Supplementary Material\\[2pt]
+\large How should genomic foundation models be evaluated for metagenomic
+taxonomic classification?}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Dataset and splits}
+\begin{table}[h]
+\centering
+\caption{Dataset composition and read-duplication structure.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xl@{}}
+\toprule
+Property & Value \\
+\midrule
+Reference source & Unified human-gut genome catalogue \\
+Genera / species & 120 / 1{,}535 \\
+Read simulator / length & ART Illumina / 150\,bp \\
+Most abundant genus & \emph{Collinsella} (22.8\%) \\
+Source pool (total / unique reads) & 258.67M / 42.64M (6.07$\times$) \\
+50M training set (unique reads) & 17.76M \\
+250M training set (unique reads) & 41.94M ($\approx$ source ceiling) \\
+Primary test pool (natural distribution) & 99{,}742 reads, train-disjoint \\
+Kraken\,2 coverage-matched pool & 85{,}819 in-database reads \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Models and training configuration}
+\begin{table}[h]
+\centering
+\caption{Model configurations. NT-v2 is fine-tuned with LoRA plus an
+attention-pooling classification head; MetaTransformer (MT) variants are
+trained from scratch and differ only in tokenizer.}
+\small
+\begin{tabularx}{\linewidth}{@{}lXl@{}}
+\toprule
+Model & Backbone / tokenizer & Training \\
+\midrule
+NT-v2 (genus) & Nucleotide Transformer v2, 498M, non-overlap 6-mer & LoRA + attn-pool head \\
+NT-v2 shallow & 1-layer random init, non-overlap 6-mer & from scratch \\
+MT 6-mer (s1/s6) & MetaTransformer encoder, 6-mer overlap/non-overlap & from scratch \\
+MT 12-mer (s1) & MetaTransformer encoder, 12-mer overlap & from scratch \\
+MT 13-mer (s1) & MetaTransformer encoder, 13-mer overlap & from scratch \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textit{[Insert exact hyperparameters before submission: LoRA rank/alpha/dropout,
+target modules, optimizer, learning-rate schedule, batch size, epochs, warm-up,
+sequence length, and the literal training command for each run. These are
+tracked in the \texttt{config.yaml} of each run directory in the code
+repository.]}
+
+\section{Full read-level results}
+\begin{table}[h]
+\centering
+\caption{Genus Top-1 accuracy across data scales and tokenizers
+(companion to main-text Tables in Sections~4--5). NT-v2 with RC-TTA; MT
+forward-only.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xcc@{}}
+\toprule
+Setting & Natural pool & Leftover pool \\
+\midrule
+NT-v2 6-mer 500K            & 55.29\% & --- \\
+NT-v2 6-mer 5M             & 63.05\% & --- \\
+NT-v2 6-mer 50M            & 67.07\% & 58.1\% \\
+NT-v2 6-mer 250M warm       & 67.29\% & 58.3\% \\
+NT-v2 6-mer 250M scratch    & 64.8\%  & 55.5\% \\
+NT-v2 17.6M species-balanced & 60.4\% & 50.2\% \\
+NT-v2 17.6M genus-balanced   & 37.2\% & 35.9\% \\
+MT 13-mer 50M              & 87.5\%  & 83.0\% \\
+MT 13-mer 250M             & 98.7\%  & 98.5\% \\
+MT 12-mer 50M              & 78.83\% & --- \\
+MT 6-mer s1 50M            & 48.87\% & 39.1\% \\
+MT 6-mer s6 50M            & 47.00\% & 33.0\% \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Train-fit ceiling}
+\begin{table}[h]
+\centering
+\caption{Training versus validation accuracy. The 6-mer model cannot fit the
+training set past $\sim$66\%; the 13-mer model fits to 99\%.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xcc@{}}
+\toprule
+Model & Train acc.\ & Val acc.\ \\
+\midrule
+NT-v2 250M scratch & 63.2\% & 64.1\% \\
+NT-v2 250M warm    & 65.8\% & 66.6\% \\
+MT 13-mer 250M     & 98.9\% & 97.5\% \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Is 13-mer just lookup? Non-neural baselines}
+\begin{table}[h]
+\centering
+\caption{$k$-mer classifiers on the same 50M-read reference and test pool.
+The 13-mer network is not exact-match lookup; composition (naive Bayes) already
+reaches 74.9\%, and the network adds a further $+13$ pp.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xc@{}}
+\toprule
+Method & Genus Top-1 \\
+\midrule
+Unique-key lookup (Kraken-style, $k{=}13$) & 0.72\% \\
+Dominant-genus majority vote & 35.3\% \\
+Multinomial 13-mer naive Bayes & 74.9\% \\
+MT 13-mer neural (50M) & 87.5\% \\
+NT-v2 6-mer (498M pre-trained) & 67\% \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section{Computational cost}
+\begin{table}[h]
+\centering
+\caption{End-to-end inference throughput on 100K reads (batch 1024, single
+H200) and training peak memory. The large 13-mer vocabulary makes MT 13-mer
+slower and more memory-hungry than NT-v2 despite fewer nominal encoder
+parameters.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xccc@{}}
+\toprule
+Model & reads/s & ms/read & Peak GPU (infer) \\
+\midrule
+NT-v2 genus       & 1{,}221 & 0.82 & 6{,}731 MiB \\
+MT 13-mer s1 genus & 1{,}066 & 0.94 & 9{,}355 MiB \\
+MT 6-mer s6        & 3{,}030 & --- & 857 MiB \\
+\bottomrule
+\end{tabularx}
+\end{table}
+Training peak memory: MT 13-mer 16.5\,GB vs NT-v2 LoRA 8.8\,GB. Distributed
+training on 64 GPUs (8 nodes $\times$ 8 H200) with DDP: 476 min/epoch on a cold
+NFS cache versus 43 min/epoch warm (an 11$\times$ I/O effect worth noting for
+reproduction at scale).
+
+\end{document}

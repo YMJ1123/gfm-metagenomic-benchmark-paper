@@ -1,0 +1,23 @@
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.run.xml
+*.bcf
+*.xdv
+*.spl
+# built PDFs (produced by CI / Overleaf; do not track)
+main.pdf
+supplementary.pdf
+cover_letter.pdf

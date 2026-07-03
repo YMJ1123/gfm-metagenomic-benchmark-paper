@@ -1,0 +1,47 @@
+\section{Limitations and future directions}
+\label{sec:limitations}
+
+\paragraph{Closed-set evaluation.}
+The headline 98.7\% and $r\!\approx\!1$ figures characterize classification
+against genomes that are present in the reference. Because our test organisms
+are drawn from the same catalogue used to build the training reference, these
+numbers measure closed-set performance, not novel-genome generalization. We
+showed the mechanism is learned composition rather than exact-match lookup
+(Section~\ref{sec:lookup}), but the more demanding question---how accuracy
+transfers to genomes of the same genera that were \emph{withheld} from
+training---is the single most important open item. An out-of-genome
+generalization experiment (holding out a subset of each genus's genomes from
+training) is the natural next step and is required before the tokenization
+advantage can be claimed for real-world discovery settings.
+
+\paragraph{Simulated reads.}
+Reads were generated with ART \citep{Huang2012}. Simulation may favour
+alignment- and $k$-mer-based methods with structurally clean error models, and
+does not capture all real sequencing artefacts. Validation on real Illumina
+data with known composition---for example a defined mock community---would test
+robustness to real error profiles and to incomplete database coverage
+simultaneously, and is a priority for follow-up.
+
+\paragraph{Baseline breadth.}
+We compared against Kraken\,2 as the dominant production baseline. A complete
+benchmark should add Bracken \citep{Lu2017} for Kraken\,2 abundance
+re-estimation, and Centrifuge \citep{Kim2016} or other classifiers, so that the
+neural models are measured against the strongest available pipelines rather than
+a single tool. We report Kraken\,2 without Bracken here and flag this as a
+known gap.
+
+\paragraph{Single read length and evaluation asymmetry.}
+All experiments use 150\,bp reads; generalization to other read lengths
+(75/250\,bp) is untested. We also note a metric asymmetry in the current
+results---NT-v2 numbers use reverse-complement test-time augmentation while
+MetaTransformer numbers are forward-only---which slightly understates the
+MetaTransformer models (RC-TTA adds $\sim$0.7 pp); harmonizing this is
+straightforward and does not affect any qualitative conclusion.
+
+\paragraph{Outlook.}
+The consistent thread is that input representation, not model scale, is the
+binding constraint for short-read taxonomy with foundation models. The most
+promising direction is a microbial foundation model pre-trained with
+overlapping long-$k$ tokenization and an efficient large-vocabulary embedding,
+evaluated from the outset with the leakage control, out-of-genome splits, and
+dual read/sample metrics used here.

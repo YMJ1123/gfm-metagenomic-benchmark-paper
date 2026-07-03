@@ -1,0 +1,124 @@
+%=======================================================================
+%  Briefings in Bioinformatics -- Problem-solving Protocol
+%  Official OUP class: oup-authoring-template (contemporary, numbered refs)
+%
+%  "How should genomic foundation models be evaluated for metagenomic
+%   taxonomic classification?"
+%
+%  Compiles with pdflatex + bibtex on any full TeX Live / Overleaf.
+%  The OUP class + .bst files are bundled in this repo, so no extra
+%  installation is required.  Build order:  pdflatex -> bibtex -> pdflatex x2
+%  (or: latexmk -pdf main.tex).
+%=======================================================================
+\documentclass[unnumsec,webpdf,contemporary,large,numbered]{oup-authoring-template}
+
+% --- extra packages not already provided by the class ---
+% (class already loads: graphicx, caption, amsmath, amssymb, array, xcolor,
+%  natbib, multirow, url, hyperref, tikz)
+\usepackage{tabularx}
+\usetikzlibrary{arrows.meta,positioning}
+
+\graphicspath{{figures/}}
+
+% colour used by the Figure 1 schematic
+\definecolor{bibblue}{RGB}{0,63,114}
+
+% For peer review you may enable line numbers (uncomment):
+%\usepackage[mathlines,switch]{lineno}\linenumbers
+
+\begin{document}
+
+\journaltitle{Briefings in Bioinformatics}
+\DOI{}
+\copyrightyear{2026}
+\pubyear{2026}
+\access{Advance Access Publication Date: Day Month Year}
+\appnotes{Problem-solving Protocol}
+
+\firstpage{1}
+
+\title[GFMs for metagenomic taxonomic classification]{How should genomic
+foundation models be evaluated for metagenomic taxonomic classification?
+A controlled benchmark of pre-training, tokenization, and data scaling}
+
+\author[1,$\ast$]{First Author\ORCID{0000-0000-0000-0000}}
+\author[1]{Second Author}
+
+\address[1]{\orgdiv{Institute/Department}, \orgname{National Taiwan University},
+\orgaddress{\street{Street}, \postcode{Postcode}, \state{Taipei},
+\country{Taiwan}}}
+
+\corresp[$\ast$]{Corresponding author. \href{mailto:email@ntu.edu.tw}{email@ntu.edu.tw}}
+
+%\received{Date}{0}{Year}
+%\revised{Date}{0}{Year}
+%\accepted{Date}{0}{Year}
+
+\abstract{\textbf{Background:} Genomic foundation models (GFMs) have shown
+promise across many genomic tasks, yet their utility for metagenomic
+short-read taxonomic classification---where reads are $\sim$150\,bp and
+per-read taxonomic signal is sparse---remains poorly characterized, and it is
+unclear which design axis (pre-training, tokenization, or data scale) actually
+governs performance.
+\textbf{Methods:} We present a controlled benchmark that varies one factor at a
+time while holding architecture, data, and evaluation constant. Using reads
+simulated from a unified human-gut genome catalogue across 120 genera and
+1{,}535 species, we ablate data scale (500K--250M reads), pre-training
+(a 498M-parameter pre-trained backbone versus a randomly initialized one),
+tokenization (6/12/13-mer, overlapping versus non-overlapping), and evaluation
+protocol (read-level accuracy, sample-level abundance estimation, and binary
+detection), and compare against the alignment-free classifier Kraken\,2.
+\textbf{Results:} Overlapping 13-mer tokenization, not backbone pre-training,
+determines the performance ceiling: an overlapping-13-mer model trained from
+scratch reaches 87.4\% genus Top-1 accuracy versus 67.1\% for a pre-trained
+6-mer model on identical 50M-read data. The 6-mer model saturates beyond 50M
+reads ($+0.22$ percentage points to 250M) while the 13-mer model keeps scaling
+(87.5\% to 98.7\%). With tokenization fixed at 6-mer, pre-training contributes
+$+13.2$ percentage points. At the sample level, a 67\%-accurate read classifier
+attains Pearson $r=0.99$ for genus abundance---exceeding Kraken\,2
+($r=0.82$), whose $\sim$30\% abstention uniformly deflates predicted
+abundances---yet Kraken\,2 remains far stronger for low-abundance detection.
+\textbf{Conclusion:} Tokenization design is the critical, and currently
+under-appreciated, factor for GFM-based metagenomic classification. We translate
+these findings into use-case-specific recommendations and argue that future
+microbial foundation models should be pre-trained with overlapping long-$k$
+tokenization.}
+
+\keywords{genomic foundation models, metagenomics, taxonomic classification,
+tokenization, benchmarking, short-read sequencing}
+
+\boxedtext{Key Points}{
+\begin{itemize}
+\item Under a fixed backbone, training-data volume dominates accuracy only up to
+a tokenizer-imposed ceiling: a non-overlapping 6-mer model saturates beyond 50M
+reads ($+0.22$ percentage points from 50M to 250M).
+\item Tokenization, not backbone pre-training, sets the performance ceiling: an
+overlapping 13-mer model trained from scratch reaches 87.4\% genus Top-1 versus
+67.1\% for a 498M-parameter pre-trained model under identical data.
+\item Pre-training still helps when tokenization is held fixed ($+13.2$
+percentage points over a randomly initialized backbone with the same 6-mer
+input), so the two factors are separable and both matter.
+\item Read-level accuracy and sample-level utility diverge: a 67\%-accurate read
+classifier reaches Pearson $r=0.99$ for genus abundance, but low read accuracy
+still cripples low-abundance detection.
+\item We give practical, use-case-specific recommendations and argue that future
+microbial foundation models should be pre-trained with overlapping long-$k$
+tokenization.
+\end{itemize}}
+
+\maketitle
+
+\input{sections/01_introduction}
+\input{sections/02_challenges}
+\input{sections/03_benchmark_design}
+\input{sections/04_data_scaling}
+\input{sections/05_pretraining_vs_tokenization}
+\input{sections/06_read_vs_sample}
+\input{sections/07_recommendations}
+\input{sections/08_limitations}
+\input{sections/09_endmatter}
+
+\bibliographystyle{oup-plain}
+\bibliography{references}
+
+\end{document}

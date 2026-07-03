@@ -1,0 +1,55 @@
+\documentclass[11pt]{letter}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{hyperref}
+\signature{Author One\\ on behalf of all authors}
+\address{Institute/Department\\ National Taiwan University\\ Taipei, Taiwan\\ email@ntu.edu.tw}
+\begin{document}
+\begin{letter}{The Editors\\ \emph{Briefings in Bioinformatics}\\ Oxford University Press}
+\opening{Dear Editors,}
+
+We are pleased to submit our manuscript, ``\emph{How should genomic foundation
+models be evaluated for metagenomic taxonomic classification? A controlled
+benchmark of pre-training, tokenization, and data scaling},'' for consideration
+as a \textbf{Problem-solving Protocol} in \emph{Briefings in Bioinformatics}.
+
+Genomic foundation models (GFMs) are increasingly proposed for metagenomic
+tasks, but the community lacks clear, controlled guidance on \emph{which} design
+choice actually determines their performance for short-read taxonomic
+classification. Published comparisons typically vary model size, data, and
+tokenization together, leaving practitioners unable to attribute gains. Our
+manuscript addresses this methodological question directly, in the
+protocol-and-recommendation style that fits the journal's readership rather than
+as a single new-method paper.
+
+We believe the work suits \emph{Briefings in Bioinformatics} for three reasons.
+First, its contribution is a \emph{benchmarking protocol and a set of practical
+recommendations}, not a single tool---each experiment isolates one factor (data
+scale, pre-training, tokenization) so the resulting guidance is causal and
+actionable. Second, the central finding is broadly useful and somewhat
+counter-intuitive: tokenization, not backbone pre-training or data scale, sets
+the ceiling for short-read taxonomy, and a parameter-free 13-mer classifier can
+outperform a 498M-parameter pre-trained model. Third, we provide a dual
+read-level/sample-level evaluation and a coverage-matched comparison with
+Kraken\,2 that yields concrete, use-case-specific recommendations---including the
+non-obvious result that a mid-accuracy neural model can exceed Kraken\,2 on
+abundance estimation while remaining a weak detector.
+
+We are transparent about the main limitation---the high closed-set accuracy
+reflects near-complete reference coverage rather than novel-genome
+generalization---and we frame it as a direction for the field rather than a
+solved problem; an out-of-genome generalization experiment is in progress and
+can be added during revision if the editors consider it essential.
+
+This manuscript is original, is not under consideration elsewhere, and all
+authors approve its submission. We disclose in the manuscript that an AI
+assistant was used to help draft and edit the text and organize results; all
+scientific claims and reported numbers were verified by the authors. We declare
+no competing interests. We would be glad to suggest suitable reviewers with
+expertise in genomic language models and metagenomic classification upon
+request.
+
+\closing{Sincerely,}
+\end{letter}
+\end{document}

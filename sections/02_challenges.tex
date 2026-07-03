@@ -1,0 +1,49 @@
+\section{Why metagenomic read classification challenges current GFMs}
+\label{sec:challenges}
+
+Three properties of the task make it a poor fit for foundation models designed
+and evaluated on other genomic problems.
+
+\paragraph{Short reads truncate long-range context.}
+Modern GFMs derive much of their advantage from modelling long-range
+dependencies---HyenaDNA and Evo operate over tens to hundreds of kilobases
+\citep{Nguyen2023hyena,Nguyen2024,Brixi2025}. A 150\,bp Illumina read offers
+none of that context. Whatever discriminative information exists must be
+extracted from local composition, so the mechanism that distinguishes a strong
+model from a weak one on genome-scale tasks is largely unavailable here. This
+predicts that input representation (how 150\,bp is turned into tokens) should
+matter more than backbone depth or pre-training corpus---a prediction we test
+directly.
+
+\paragraph{Tokenization discards or preserves local signal.}
+The taxonomic signal in a short read lives in its $k$-mer composition. How a
+model tokenizes that read therefore determines how much signal reaches the
+network. Nucleotide Transformer v2 uses \emph{non-overlapping} 6-mers: a
+150\,bp read becomes $\sim$25 tokens, and any motif that straddles a 6-mer
+boundary is split across two tokens whose identity depends on frame. Kraken\,2,
+by contrast, effectively uses long \emph{overlapping} $k$-mers ($k\approx 35$),
+capturing every length-$k$ substring. Overlapping long-$k$ tokenization is much
+closer to the representation that classical metagenomics has always relied on,
+but it is the exception rather than the rule among pre-trained GFMs. This gap
+between ``how GFMs tokenize'' and ``what the task needs'' is, we argue, the
+central issue, and it motivates treating tokenization as a first-class
+experimental variable.
+
+\paragraph{Large, long-tailed label spaces.}
+Real communities span hundreds of genera and thousands of species with
+abundances covering several orders of magnitude. A read-level classifier must
+therefore solve a 120-way (genus) or 1{,}535-way (species) problem from 150\,bp,
+with training data that is intrinsically imbalanced. Naively rebalancing the
+classes trades per-read accuracy and real-abundance fidelity for macro-averaged
+metrics (Section~\ref{sec:scaling}), so the choice of evaluation metric is not
+cosmetic---it changes which model looks best. This is why we evaluate at two
+levels: per-read accuracy, which measures raw discriminative power, and
+sample-level abundance, which measures the quantity practitioners actually
+report.
+
+\medskip
+\noindent Together these properties imply that a fair evaluation must (i) hold
+the architecture fixed while varying tokenization, (ii) separate data scale
+from model capacity, and (iii) report both read-level and sample-level
+outcomes. The benchmark in Section~\ref{sec:design} is built around exactly
+these requirements.

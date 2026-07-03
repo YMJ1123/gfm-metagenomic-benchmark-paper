@@ -1,0 +1,121 @@
+\section{Read-level accuracy versus sample-level utility}
+\label{sec:sample}
+
+Read-level accuracy measures raw discriminative power, but practitioners
+usually care about the community profile: the relative abundance of each taxon
+in a sample. These two quantities can diverge, because independent per-read
+errors partially cancel when aggregated. We therefore evaluate every model at
+the sample level---relative-abundance estimation and binary detection---and
+compare against Kraken\,2 on a database-coverage-matched pool.
+
+\subsection{Per-read errors largely cancel in abundance estimates}
+
+On synthetic species-balanced samples (9 samples $\times$ 10K reads from the
+natural-distribution pool), a 67\%-accurate read classifier yields a
+genus relative-abundance Pearson $r=0.993$ and Bray--Curtis dissimilarity
+$0.098$ (Table~\ref{tab:sample}, Figure~\ref{fig:abund}). The overlapping-13-mer
+model, with far higher read accuracy, reaches $r\!\approx\!1.000$. The ranking
+by sample-level fidelity follows the ranking by read accuracy, but even the
+mid-accuracy model is highly usable for abundance because misclassifications
+are not systematically biased toward any one genus and thus average out. We
+report $r$ as a range rather than a single value, because it is pool-dependent
+(e.g.\ NT-v2 gives $r=0.928$ on the harder leftover pool); the genus-balanced
+model, consistent with Section~\ref{sec:scaling}, is the clear outlier at
+$r=0.862$.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Sample-level genus abundance} on the natural-distribution
+pool (9$\times$10K reads). Higher read accuracy tracks better abundance
+fidelity, but even a 67\%-accurate model attains $r=0.99$. Genus-balancing
+(bottom row) is counterproductive.}
+\label{tab:sample}
+\begin{tabularx}{\columnwidth}{@{}Xccc@{}}
+\toprule
+Model & Read acc.\ & Pearson $r$ & Bray--Curtis \\
+\midrule
+MT 13-mer (250M)         & 98.7\% & 1.000 & 0.005 \\
+MT 13-mer (50M)          & 87.5\% & 0.999 & 0.032 \\
+NT-v2 6-mer (50M)        & 67.1\% & 0.993 & 0.098 \\
+NT-v2 6-mer (250M warm)  & 67.3\% & 0.993 & 0.098 \\
+MT 6-mer (scratch)       & 48.9\% & 0.989 & 0.171 \\
+NT-v2 genus-balanced     & 37.2\% & 0.862 & 0.420 \\
+\botrule
+\end{tabularx}
+\end{table}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{cross_setting_comparison.png}
+\caption{\textbf{Sample-level abundance across settings.} Predicted versus true
+genus relative abundance for each model. Points hug the diagonal even for
+mid-accuracy models, illustrating how independent per-read errors cancel in
+aggregate; the genus-balanced model departs from the diagonal.}
+\label{fig:abund}
+\end{figure*}
+
+\subsection{Comparison with Kraken\,2: abundance versus detection}
+
+On the coverage-matched genus pool (85{,}819 reads whose source species are in
+the Kraken\,2 database), the picture is more nuanced and, we think, the most
+interesting practical result (Table~\ref{tab:kraken},
+Figure~\ref{fig:kraken}). For \emph{abundance estimation}, the NT-v2 model
+attains Pearson $r=0.992$, \emph{exceeding} Kraken\,2's $r=0.823$. The reason is
+structural: Kraken\,2 leaves $\sim$30\% of reads unclassified, and because that
+abstention is spread across taxa it uniformly deflates predicted abundances,
+distorting the profile. A neural classifier that always emits a label avoids
+this systematic bias. For \emph{detection}---identifying which genera are
+present---the ranking reverses: Kraken\,2 achieves ROC AUC 0.966 and 93.5\%
+sensitivity at 95\% specificity, far above NT-v2 6-mer (AUC 0.681, 17.5\%
+sensitivity). The overlapping-13-mer model sits between the two on detection
+(AUC 0.905, 66.5\%). The lesson is that ``which classifier is better'' has no
+single answer: it depends on whether the downstream question is \emph{how much}
+(abundance) or \emph{whether present} (detection).
+
+\begin{table*}[t]
+\centering
+\caption{\textbf{Genus-level, coverage-matched comparison with Kraken\,2}
+(85{,}819 in-database reads). Neural models win on abundance correlation;
+Kraken\,2 dominates low-abundance detection. Sens@95 = sensitivity at 95\%
+specificity.}
+\label{tab:kraken}
+\begin{tabularx}{\textwidth}{@{}Xccccc@{}}
+\toprule
+Model & Read acc.\ & Pearson $r$ & Bray--Curtis & ROC AUC & Sens@95 \\
+\midrule
+MT 13-mer            & 94.9\% & \textbf{0.999} & 0.029 & 0.905 & 66.5\% \\
+NT-v2 6-mer          & 68.9\% & 0.992 & 0.116 & 0.681 & 17.5\% \\
+Kraken\,2 ($k{=}35$) & 77.7\% & 0.823 & 0.126 & \textbf{0.966} & \textbf{93.5\%} \\
+MT 6-mer             & 51.5\% & 0.983 & 0.177 & 0.576 & 9.2\% \\
+\botrule
+\end{tabularx}
+\end{table*}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{roc_detection.png}
+\caption{\textbf{Genus detection ROC.} Kraken\,2 dominates detection of
+present-versus-absent genera, especially in the high-specificity regime that
+matters for controlling false positives, while neural 6-mer models are weak
+detectors despite competitive abundance correlation.}
+\label{fig:kraken}
+\end{figure}
+
+\subsection{Species level and the low-abundance noise floor}
+
+At the species level (1{,}535 classes) the gap widens in Kraken\,2's favour on
+the coverage-matched pool (77.2\% read accuracy, $r=0.847$), because exact long
+$k$-mers resolve fine taxonomy that 6-mer neural models cannot. This is a
+concrete boundary of the current GFM approach: species-level classification
+from 150\,bp needs either a long-$k$ tokenizer or a stronger hierarchical
+router; a flat 6-mer model is insufficient. Conversely, Kraken\,2's dependence
+on database coverage is a real liability---on 219 species outside its custom
+database it scores 0\% while the neural models retain non-zero posterior mass,
+the flip side of the abstention behaviour above.
+
+Finally, the abstention-free behaviour of neural models has a cost for rare
+taxa: a genuinely absent genus still receives a small number of spurious reads
+(on the order of $\sim$0.28\% of a sample), setting a noise floor below which
+detection is unreliable. This noise floor has a clean interpretation and
+motivates the calibrated-threshold recommendation in
+Section~\ref{sec:recommendations}.

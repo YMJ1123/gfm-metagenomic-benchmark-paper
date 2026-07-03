@@ -1,0 +1,65 @@
+\section{Data scaling and the saturation effect}
+\label{sec:scaling}
+
+We first ask how far data scale alone can carry a fixed pre-trained backbone.
+Holding the NT-v2 architecture, LoRA configuration, and 6-mer tokenization
+fixed, we increase the training set from 500K to 250M reads
+(Figure~\ref{fig:scaling}). Genus Top-1 accuracy (120 classes, with
+reverse-complement test-time augmentation) rises steeply at first---55.29\% at
+500K, 63.05\% at 5M ($+7.76$ percentage points per 10$\times$), 67.07\% at
+50M---then flattens: extending to 250M yields only 67.29\% ($+0.22$ pp for a
+further 5$\times$). Over this same range, architectural and training-technique
+variations produce at most $\pm0.5$ pp, so within the fixed NT-v2 framework
+data volume is the dominant controllable factor, but only up to $\sim$50M reads.
+
+Two observations show this is a ceiling of the representation, not of the data.
+First, the underlying unique-read counts (50M $\rightarrow$ 17.8M unique; 250M
+$\rightarrow$ 41.9M unique) confirm that most of the extra reads are repeats, so
+the marginal information added past 50M is modest---but not zero, and certainly
+not enough to explain complete saturation. Second, and decisively, the same
+data does \emph{not} saturate a different tokenizer: an overlapping-13-mer
+MetaTransformer trained on the identical $50\text{M}\!\rightarrow\!250\text{M}$
+reads improves from 87.5\% to 98.7\% genus Top-1 over exactly the range where
+NT-v2 is flat (Section~\ref{sec:decomp}). The saturation is therefore a
+property of the 6-mer tokenizer, not of the training corpus.
+
+Reverse-complement test-time augmentation---averaging predictions over a read
+and its reverse complement---gives a small but consistent improvement of
+$+0.1$ to $+1.5$ pp across all settings (Figure~\ref{fig:rctta}), reflecting the
+strand symmetry of the underlying biology
+\citep{Zhou2022rc,Brown2021rc,Ma2025rc}; we apply it to all NT-v2 numbers.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{data_scaling.pdf}
+\caption{\textbf{Data scaling within a fixed NT-v2 backbone.} Genus Top-1
+accuracy as a function of training-read count (log scale; $x$-axis counts reads
+including repeats). Accuracy climbs from 500K to 50M then saturates: the
+$5\times$ step from 50M to 250M adds only $+0.22$ pp. The plateau is set by the
+non-overlapping 6-mer tokenizer, not by data availability
+(cf.\ Section~\ref{sec:decomp}).}
+\label{fig:scaling}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{rc_tta_benefit.pdf}
+\caption{\textbf{Reverse-complement test-time augmentation.} Averaging over a
+read and its reverse complement yields a consistent $+0.1$ to $+1.5$ pp gain
+across settings, exploiting strand symmetry at no training cost.}
+\label{fig:rctta}
+\end{figure}
+
+\paragraph{Class balancing is counterproductive for real abundance.}
+Because the label space is long-tailed, one might rebalance classes to help
+rare taxa. At a fixed 17.6M-read budget, we compared species-balanced and
+genus-balanced sampling (varying only the balancing axis). Genus-balancing
+raises the flat, per-genus-averaged accuracy from 33.1\% to 43.5\%
+($+10$ pp on the macro metric), but it \emph{lowers} per-read accuracy from
+60.4\% to 37.2\% ($-23$ pp) and degrades sample-level abundance fidelity from
+Pearson $r=0.993$ to $r=0.862$. The $\sim$42--43\% flat ceiling persists even
+under balancing, indicating that most of the difficulty is intrinsic to
+150\,bp reads rather than a fixable imbalance artefact. For applications that
+report community composition, aggressive class-balancing therefore does more
+harm than good---a concrete recommendation we return to in
+Section~\ref{sec:recommendations}.

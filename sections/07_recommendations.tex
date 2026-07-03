@@ -1,0 +1,58 @@
+\section{Practical recommendations}
+\label{sec:recommendations}
+
+The controlled results above translate into concrete guidance. We separate
+recommendations for practitioners choosing or applying a tool today from
+recommendations for those designing the next generation of models.
+
+\subsection{For practitioners}
+
+\begin{table*}[t]
+\centering
+\caption{\textbf{Use-case-specific recommendations.} ``long-$k$ model'' denotes
+an overlapping long-$k$-mer neural classifier; ``6-mer GFM'' denotes a
+pre-trained NT-v2-style model with non-overlapping 6-mer tokenization.}
+\label{tab:reco}
+\begin{tabularx}{\textwidth}{@{}p{0.30\textwidth}X@{}}
+\toprule
+Use case & Recommendation \\
+\midrule
+Read-level genus classification &
+Prefer an overlapping long-$k$ model (87\% vs 67\%); a 6-mer GFM is a distant
+second. \\[2pt]
+Sample-level abundance (composition) &
+A 67\%-accurate model is often sufficient ($r=0.99$) and can beat Kraken\,2 by
+avoiding abstention bias---but validate for systematic bias on your community. \\[2pt]
+Presence/absence detection, esp.\ low-abundance taxa &
+Use Kraken\,2 (or another exact-$k$-mer tool); current 6-mer neural detectors
+are weak. Apply a calibrated abundance threshold above the $\sim$0.3\% noise
+floor. \\[2pt]
+Species-level classification &
+6-mer GFMs are insufficient; use a long-$k$ tokenizer or a hierarchical router,
+or an exact-$k$-mer tool when the target is in-database. \\[2pt]
+Handling class imbalance &
+Do \emph{not} aggressively genus-balance if you report abundance: it lifts macro
+metrics but harms per-read accuracy and abundance fidelity ($r\!:0.99\!\to\!0.86$). \\[2pt]
+Choosing a GFM &
+Do not select on backbone size alone; the tokenizer decides whether taxonomic
+signal survives. Ask what $k$ and what stride the model uses. \\
+\botrule
+\end{tabularx}
+\end{table*}
+
+\subsection{For model builders}
+
+The single highest-leverage design choice is tokenization. Future microbial
+foundation models intended for short-read taxonomy should be \emph{pre-trained}
+with overlapping long-$k$ tokenization (e.g.\ 12--13-mers), combining the
+discriminative power that overlapping long $k$-mers provide with the
+representational quality that pre-training adds---the two independent gains we
+quantified ($+20$ pp from tokenization, $+13$ pp from pre-training). Because a
+naive long-$k$ vocabulary is enormous (a 13-mer vocabulary implies a
+multi-billion-parameter embedding table; the ``$\sim$5M-parameter''
+MetaTransformer figure counts only the encoder and understates true cost),
+practical realizations will need vocabulary factorization, hashing, or hybrid
+tokenization---an open engineering problem we regard as the key next step.
+Pre-training corpora should draw on the hundreds of thousands of microbial
+genomes now catalogued \citep{Parks2022,Almeida2019} rather than
+eukaryote-dominated data.

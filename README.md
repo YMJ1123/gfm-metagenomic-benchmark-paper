@@ -1,0 +1,88 @@
+# GFMs for Metagenomic Taxonomic Classification — BIB manuscript
+
+投稿 **Briefings in Bioinformatics（BIB）** 的獨立 LaTeX 專案，文章類型為
+**Problem-solving Protocol**。使用 Oxford University Press 官方版型
+`oup-authoring-template`（class 檔已內含於本 repo，Overleaf / GitHub Action 直接可編）。
+
+> 論文核心論點：對 150 bp 短讀序列的分類學分類，**tokenization（overlapping 13-mer）
+> 比 backbone pre-training 或資料量更決定效能上限**；並提供 read-level / sample-level
+> 雙評估與對 Kraken2 的實用建議。
+
+## 檔案結構
+
+```
+main.tex                     主文（OUP class, contemporary, numbered 引用）
+sections/                    本文各節（\input 進 main.tex）
+  01_introduction.tex
+  02_challenges.tex          為何 metagenomic read classification 難倒 GFM
+  03_benchmark_design.tex    benchmark 設計 + Fig.1 TikZ 架構圖 + leakage 控制
+  04_data_scaling.tex        資料規模與 6-mer 飽和
+  05_pretraining_vs_tokenization.tex  核心分解 + 「不是 lookup」分析
+  06_read_vs_sample.tex      read-level vs sample-level + Kraken2 比較
+  07_recommendations.tex     Practical recommendations（BIB 核心要求）
+  08_limitations.tex         limitations（closed-set caveat 主動揭露）
+  09_endmatter.tex           Conflicts/Funding/Data/Code availability/CRediT/AI 揭露
+supplementary.tex            補充材料（獨立 article，可單獨出 PDF）
+cover_letter.tex             投稿信（說明為何適合 BIB + AI 揭露）
+references.bib               參考文獻
+figures/                     圖檔（主文用 5 張 + 供補充選用的額外圖）
+oup-authoring-template.cls   OUP 官方 class（內含，勿改）
+oup-plain.bst                OUP numbered 引用樣式
+oup-abbrvnat.bst             OUP author–year 引用樣式（備用）
+.github/workflows/build.yml  自動編譯出 PDF（push 觸發，Artifacts 下載）
+```
+
+## 符合 BIB 規定格式（已對齊項目）
+
+依 [BIB 官方投稿規定](https://academic.oup.com/bib/pages/msprep_submission)：
+
+- **Article type**：Problem-solving Protocol（2,000–5,000 字）— `\appnotes{Problem-solving Protocol}`
+- **官方版型**：`\documentclass[unnumsec,webpdf,contemporary,large,numbered]{oup-authoring-template}`
+- **Key Points**：`\boxedtext{Key Points}{...}`，5 點（規定至多 5 點）
+- **Abstract**：結構式 Background/Methods/Results/Conclusion，且**無任何引用**（規定要求）
+- **Keywords**：6 個（規定至多 6 個）
+- **引用格式**：numbered（方括號 [1, 3–5]，PubMed 慣例）— `oup-plain.bst`
+- **必備 endmatter**：Conflicts of interest、Funding、Data availability、Code
+  availability、Author contributions（CRediT）、Acknowledgments（含 AI 揭露）
+
+## 如何編譯出 PDF
+
+本機（Nano4）無 TeX，用以下任一：
+
+### GitHub Action（推薦，push 後自動出 PDF）
+push 到 GitHub 後，Actions 會自動編譯 `main.tex` / `supplementary.tex` /
+`cover_letter.tex`，在該次 run 的 **Artifacts** 下載 `manuscript-pdfs`。
+
+### Overleaf
+上傳整個 repo → 主文件設為 `main.tex` → 編譯器選 **pdfLaTeX**（會自動跑 bibtex）。
+
+### 本機 / 有 TeX Live 時
+```bash
+latexmk -pdf main.tex
+latexmk -pdf supplementary.tex
+pdflatex cover_letter.tex
+```
+
+## 投稿前務必補齊（檔案內以 `[...]` / `First Author` / `0000-...` 標出）
+
+- **作者、單位、ORCID、通訊 email**（`main.tex`：`\author`/`\address`/`\corresp`）
+- **CRediT 貢獻、Funding、Acknowledgments、Data DOI**（`sections/09_endmatter.tex`）
+- **Supplementary 完整超參數與訓練指令**（`supplementary.tex` 標了 `[Insert ...]`）
+- **cover_letter.tex** 地址與署名
+
+## 尚未處理的科學風險（投稿前最好先做）
+
+- **P0 out-of-genome generalization 實驗**：closed-set 98.7% 被質疑是 k-mer lookup
+  的最大風險。§8 已主動揭露並說明「revision 可補」，但先做完最穩。
+- **Bracken / Centrifuge baseline、ZymoBIOMICS 真實資料**：§8 已列為 known gap。
+
+## 數字來源
+
+所有數字取自 `benchmark_results/THESIS_NUMBERS.md`（單頁權威表）與
+`gfm-classifier/docs/kmer_lookup_analysis.md`（13-mer 非 lookup 分析）。
+實驗程式碼在 <https://github.com/m2lab-ntu/gfm-classifier>。
+
+## 授權
+
+`oup-authoring-template.cls` 與 `*.bst` © Oxford University Press，依 LPPL 授權散布。
+稿件文字與圖表著作權屬作者。

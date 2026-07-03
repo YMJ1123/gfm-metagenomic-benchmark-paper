@@ -1,0 +1,463 @@
+% ============================================================
+% Core references for the thesis
+% ============================================================
+
+% --- Genomic Foundation Models ---
+
+@inproceedings{Nguyen2023hyena,
+  author    = {Nguyen, Eric and Poli, Michael and Faizi, Marjan and Thomas, Armin and Wornow, Michael and Birch-Sykes, Callum and Massaroli, Stefano and Patel, Aman and Rabideau, Clayton and Bengio, Yoshua and Ermon, Stefano and Ré, Christopher and Baccus, Stephen},
+  title     = {{HyenaDNA}: Long-Range Genomic Sequence Modeling at Single Nucleotide Resolution},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
+  volume    = {36},
+  year      = {2023},
+}
+
+@inproceedings{Schiff2024caduceus,
+  author    = {Schiff, Yair and Kao, Chia-Hsiang and Gokaslan, Aaron and Dao, Tri and Gu, Albert and Kuleshov, Volodymyr},
+  title     = {Caduceus: Bi-Directional Equivariant Long-Range {DNA} Sequence Modeling},
+  booktitle = {Proceedings of the 41st International Conference on Machine Learning (ICML)},
+  year      = {2024},
+}
+
+@article{Zhou2025dnaberts,
+  author    = {Zhou, Zhihan and Wu, Weimin and Ho, Harrison and Wang, Jiayi and Shi, Lizhen and Davuluri, Ramana V. and Wang, Zhong and Liu, Han},
+  title     = {{DNABERT-S}: Pioneering Species Differentiation with Species-Aware {DNA} Embeddings},
+  journal   = {Bioinformatics},
+  volume    = {41},
+  number    = {Supplement\_1},
+  pages     = {i255--i264},
+  year      = {2025},
+  doi       = {10.1093/bioinformatics/btaf188},
+}
+
+@article{Peng2024viralm,
+  author    = {Peng, Cheng and Shang, Jiayu and Guan, Jiaojiao and Wang, Donglin and Sun, Yanni},
+  title     = {{ViraLM}: Empowering Virus Discovery through the Genome Foundation Model},
+  journal   = {Bioinformatics},
+  volume    = {40},
+  number    = {12},
+  pages     = {btae704},
+  year      = {2024},
+  doi       = {10.1093/bioinformatics/btae704},
+}
+
+@article{Mock2022bertax,
+  author    = {Mock, Florian and Kretschmer, Fleming and Kriese, Anton and Böcker, Sebastian and Marz, Manja},
+  title     = {Taxonomic Classification of {DNA} Sequences beyond Sequence Similarity Using Deep Neural Networks},
+  journal   = {Proceedings of the National Academy of Sciences},
+  volume    = {119},
+  number    = {35},
+  pages     = {e2122636119},
+  year      = {2022},
+  doi       = {10.1073/pnas.2122636119},
+}
+
+@article{Lindsey2025tokenizer,
+  author    = {Lindsey, LeAnn M. and Pershing, Nicole L. and Habib, Anisa and Dufault-Thompson, Keith and Stephens, W. Zac and Blaschke, Anne J. and Jiang, Xiaofang and Sundar, Hari},
+  title     = {The Impact of Tokenizer Selection in Genomic Language Models},
+  journal   = {Bioinformatics},
+  volume    = {41},
+  number    = {9},
+  pages     = {btaf456},
+  year      = {2025},
+  doi       = {10.1093/bioinformatics/btaf456},
+}
+
+@article{DallaTorre2023,
+  author    = {Dalla-Torre, Hugo and Gonzalez, Liam and Mendoza-Revilla, Javier and Lopez Carranza, Nicolas and Grzywaczewski, Adam Henryk and Oteri, Francesco and Dallago, Christian and Trop, Evan and de Almeida, Bernardo P. and Sirelkhatim, Hassan and Richard, Guillaume and Skwark, Marcin and Beguir, Karim and Lopez, Marie and Pierrot, Thomas},
+  title     = {The {Nucleotide Transformer}: Building and Evaluating Robust Foundation Models for Human Genomics},
+  journal   = {Nature Methods},
+  year      = {2024},
+  note      = {Preprint on bioRxiv, 2023},
+  doi       = {10.1038/s41592-024-02523-z},
+}
+
+@article{Ji2021,
+  author    = {Ji, Yanrong and Zhou, Zhihan and Liu, Han and Davuluri, Ramana V.},
+  title     = {{DNABERT}: Pre-trained Bidirectional Encoder Representations from Transformers Model for {DNA}-Language in Genome},
+  journal   = {Bioinformatics},
+  volume    = {37},
+  number    = {15},
+  pages     = {2112--2120},
+  year      = {2021},
+  doi       = {10.1093/bioinformatics/btab083},
+}
+
+@article{Zhou2024dnabert2,
+  author    = {Zhou, Zhihan and Ji, Yanrong and Li, Weijian and Dutta, Pratik and Davuluri, Ramana V. and Liu, Han},
+  title     = {{DNABERT-2}: Efficient Foundation Model and Benchmark for Multi-Species Genome},
+  journal   = {arXiv preprint arXiv:2306.15006},
+  year      = {2024},
+}
+
+@article{Nguyen2024,
+  author    = {Nguyen, Eric and Poli, Michael and Durrant, Matthew G. and Thomas, Armin W. and Kang, Brian and Sullivan, Jeremy and Ng, Madelena Y. and Lewis, Ashley and Patel, Aman and Lou, Aaron and others},
+  title     = {Sequence Modeling and Design from Molecular to Genome Scale with {Evo}},
+  journal   = {Science},
+  volume    = {386},
+  number    = {6723},
+  year      = {2024},
+  doi       = {10.1126/science.ado9336},
+}
+
+@article{Brixi2025,
+  author    = {Brixi, Garyk and Durrant, Matthew G. and Ku, Jerome and Poli, Michael and Brockman, Greg and Chang, Daniel and Gonzalez, Gabriel A. and King, Samuel H. and Li, David B. and Merchant, Aditi T. and Naghipourfar, Mohsen and Nguyen, Eric and Ricci-Tam, Chiara and Romero, David W. and others},
+  title     = {Genome Modeling and Design Across All Domains of Life with {Evo}~2},
+  journal   = {bioRxiv},
+  year      = {2025},
+  doi       = {10.1101/2025.02.18.638918},
+}
+
+@article{Lin2023,
+  author    = {Lin, Zeming and Akin, Halil and Rao, Roshan and Hie, Brian and Zhu, Zhongkai and Lu, Wenting and Smestad, Nikita and Costa, Allan and Fazel-Zarandi, Maryam and Sercu, Tom and Candela, Sal and Rives, Alexander},
+  title     = {Evolutionary-Scale Prediction of Atomic-Level Protein Structure with a Language Model},
+  journal   = {Science},
+  volume    = {379},
+  number    = {6637},
+  pages     = {1123--1130},
+  year      = {2023},
+  doi       = {10.1126/science.ade2574},
+}
+
+@article{Poli2024,
+  author    = {Poli, Michael and Massaroli, Stefano and Nguyen, Eric and Fu, Daniel Y. and Dao, Tri and Baccus, Stephen and Bengio, Yoshua and Ermon, Stefano and Ré, Christopher},
+  title     = {{Hyena Hierarchy}: Towards Larger Convolutional Language Models},
+  journal   = {arXiv preprint arXiv:2302.10866},
+  year      = {2023},
+}
+
+% --- Metagenomic Classification Methods ---
+
+@article{Wichmann2023,
+  author    = {Wichmann, Alexander and Buschong, Etienne and Müller, André and Jünger, Daniel and Hildebrandt, Andreas and Hankeln, Thomas and Schmidt, Bertil},
+  title     = {{MetaTransformer}: Deep Metagenomic Sequencing Read Classification Using Self-Attention Models},
+  journal   = {NAR Genomics and Bioinformatics},
+  volume    = {5},
+  number    = {3},
+  pages     = {lqad082},
+  year      = {2023},
+  doi       = {10.1093/nargab/lqad082},
+}
+
+@article{Wood2019,
+  author    = {Wood, Derrick E. and Lu, Jennifer and Langmead, Ben},
+  title     = {Improved Metagenomic Analysis with {Kraken 2}},
+  journal   = {Genome Biology},
+  volume    = {20},
+  pages     = {257},
+  year      = {2019},
+  doi       = {10.1186/s13059-019-1891-0},
+}
+
+@article{Kim2016,
+  author    = {Kim, Daehwan and Song, Li and Breitwieser, Florian P. and Salzberg, Steven L.},
+  title     = {Centrifuge: Rapid and Sensitive Classification of Metagenomic Sequences},
+  journal   = {Genome Research},
+  volume    = {26},
+  number    = {12},
+  pages     = {1721--1729},
+  year      = {2016},
+  doi       = {10.1101/gr.210641.116},
+}
+
+@article{Liang2020,
+  author    = {Liang, Qiaoxing and Bible, Paul W. and Liu, Yu and Zou, Bin and Wei, Lai},
+  title     = {{DeepMicrobes}: Taxonomic Classification for Metagenomics with Deep Learning},
+  journal   = {NAR Genomics and Bioinformatics},
+  volume    = {2},
+  number    = {1},
+  year      = {2020},
+  doi       = {10.1093/nargab/lqaa009},
+}
+
+@article{Altschul1990,
+  author    = {Altschul, Stephen F. and Gish, Warren and Miller, Webb and Myers, Eugene W. and Lipman, David J.},
+  title     = {Basic Local Alignment Search Tool},
+  journal   = {Journal of Molecular Biology},
+  volume    = {215},
+  number    = {3},
+  pages     = {403--410},
+  year      = {1990},
+  doi       = {10.1016/S0022-2836(05)80360-2},
+}
+
+@article{Buchfink2015,
+  author    = {Buchfink, Benjamin and Xie, Chao and Huson, Daniel H.},
+  title     = {Fast and Sensitive Protein Alignment Using {DIAMOND}},
+  journal   = {Nature Methods},
+  volume    = {12},
+  number    = {1},
+  pages     = {59--60},
+  year      = {2015},
+  doi       = {10.1038/nmeth.3176},
+}
+
+@article{Zhang2000,
+  author    = {Zhang, Zheng and Schwartz, Scott and Wagner, Lukas and Miller, Webb},
+  title     = {A Greedy Algorithm for Aligning {DNA} Sequences},
+  journal   = {Journal of Computational Biology},
+  volume    = {7},
+  number    = {1--2},
+  pages     = {203--214},
+  year      = {2000},
+  doi       = {10.1089/10665270050081478},
+}
+
+% --- Parameter-Efficient Fine-Tuning ---
+
+@inproceedings{Hu2022,
+  author    = {Hu, Edward J. and Shen, Yelong and Wallis, Phillip and Allen-Zhu, Zeyuan and Li, Yuanzhi and Wang, Shean and Wang, Lu and Chen, Weizhu},
+  title     = {{LoRA}: Low-Rank Adaptation of Large Language Models},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2022},
+}
+
+@inproceedings{Houlsby2019,
+  author    = {Houlsby, Neil and Giurgiu, Andrei and Jastrzebski, Stanislaw and Morrone, Bruna and de Laroussilhe, Quentin and Gesmundo, Andrea and Attariyan, Mona and Gelly, Sylvain},
+  title     = {Parameter-Efficient Transfer Learning for {NLP}},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {2790--2799},
+  year      = {2019},
+}
+
+@article{Li2021,
+  author    = {Li, Xiang Lisa and Liang, Percy},
+  title     = {Prefix-Tuning: Optimizing Continuous Prompts for Generation},
+  journal   = {arXiv preprint arXiv:2101.00190},
+  year      = {2021},
+}
+
+@article{Pfeiffer2021,
+  author    = {Pfeiffer, Jonas and Kamath, Aishwarya and R{\"u}ckl{\'e}, Andreas and Cho, Kyunghyun and Gurevych, Iryna},
+  title     = {{AdapterFusion}: Non-Destructive Task Composition for Transfer Learning},
+  journal   = {arXiv preprint arXiv:2005.00247},
+  year      = {2021},
+}
+
+% --- Attention Mechanisms ---
+
+@inproceedings{Jaegle2021,
+  author    = {Jaegle, Andrew and Gimeno, Felix and Brock, Andrew and Vinyals, Oriol and Zisserman, Andrew and Carreira, Jo{\~a}o},
+  title     = {Perceiver: General Perception with Iterative Attention},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {4651--4664},
+  year      = {2021},
+}
+
+@inproceedings{Lee2019,
+  author    = {Lee, Juho and Lee, Yoonho and Kim, Jungtaek and Kosiorek, Adam R. and Choi, Seungjin and Teh, Yee Whye},
+  title     = {Set Transformer: A Framework for Attention-Based Permutation-Invariant Neural Networks},
+  booktitle = {International Conference on Machine Learning (ICML)},
+  pages     = {3744--3753},
+  year      = {2019},
+}
+
+% --- Transformer and Language Models ---
+
+@inproceedings{Devlin2019,
+  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
+  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
+  booktitle = {Proceedings of NAACL-HLT},
+  pages     = {4171--4186},
+  year      = {2019},
+}
+
+@article{Brown2020,
+  author    = {Brown, Tom B. and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and Kaplan, Jared and Dhariwal, Prafulla and Neelakantan, Arvind and Shyam, Pranav and Sastry, Girish and Askell, Amanda and others},
+  title     = {Language Models Are Few-Shot Learners},
+  journal   = {Advances in Neural Information Processing Systems},
+  volume    = {33},
+  pages     = {1877--1901},
+  year      = {2020},
+}
+
+@article{Su2024,
+  author    = {Su, Jianlin and Ahmed, Murtadha and Lu, Yu and Pan, Shengfeng and Bo, Wen and Liu, Yunfeng},
+  title     = {{RoFormer}: Enhanced Transformer with Rotary Position Embedding},
+  journal   = {Neurocomputing},
+  volume    = {568},
+  pages     = {127063},
+  year      = {2024},
+  doi       = {10.1016/j.neucom.2023.127063},
+}
+
+% --- Metagenomics and Microbiome ---
+
+@article{Quince2017,
+  author    = {Quince, Christopher and Walker, Alan W. and Simpson, Jared T. and Loman, Nicholas J. and Segata, Nicola},
+  title     = {Shotgun Metagenomics, from Sampling to Analysis},
+  journal   = {Nature Biotechnology},
+  volume    = {35},
+  number    = {9},
+  pages     = {833--844},
+  year      = {2017},
+  doi       = {10.1038/nbt.3935},
+}
+
+@article{Ye2019,
+  author    = {Ye, Simon H. and Siddle, Katherine J. and Park, Daniel J. and Sabeti, Pardis C.},
+  title     = {Benchmarking Metagenomics Tools for Taxonomic Classification},
+  journal   = {Cell},
+  volume    = {178},
+  number    = {4},
+  pages     = {779--794},
+  year      = {2019},
+  doi       = {10.1016/j.cell.2019.07.010},
+}
+
+@article{Breitwieser2019,
+  author    = {Breitwieser, Florian P. and Lu, Jennifer and Salzberg, Steven L.},
+  title     = {A Review of Methods and Databases for Metagenomic Classification and Assembly},
+  journal   = {Briefings in Bioinformatics},
+  volume    = {20},
+  number    = {4},
+  pages     = {1125--1139},
+  year      = {2019},
+  doi       = {10.1093/bib/bbx120},
+}
+
+@article{Almeida2019,
+  author    = {Almeida, Alexandre and Nayfach, Stephen and Boland, Miguel and Strozzi, Francesco and Beracochea, Martin and Shi, Zhou Jason and Pollard, Katherine S. and Sakharova, Ekaterina and Parks, Donovan H. and Hugenholtz, Philip and others},
+  title     = {A Unified Catalog of 204,938 Reference Genomes from the Human Gut Microbiome},
+  journal   = {Nature Biotechnology},
+  volume    = {39},
+  number    = {1},
+  pages     = {105--114},
+  year      = {2021},
+  doi       = {10.1038/s41587-020-0603-3},
+}
+
+@article{HMP2012,
+  author    = {{Human Microbiome Project Consortium}},
+  title     = {Structure, Function and Diversity of the Healthy Human Microbiome},
+  journal   = {Nature},
+  volume    = {486},
+  number    = {7402},
+  pages     = {207--214},
+  year      = {2012},
+  doi       = {10.1038/nature11234},
+}
+
+% --- Read Simulation ---
+
+@article{Huang2012,
+  author    = {Huang, Weichun and Li, Leping and Myers, Jason R. and Marth, Gabor T.},
+  title     = {{ART}: A Next-Generation Sequencing Read Simulator},
+  journal   = {Bioinformatics},
+  volume    = {28},
+  number    = {4},
+  pages     = {593--594},
+  year      = {2012},
+  doi       = {10.1093/bioinformatics/btr708},
+}
+
+% --- Reverse-Complement Symmetry ---
+
+@inproceedings{Zhou2022rc,
+  author    = {Zhou, Hannah and Shrikumar, Avanti and Kundaje, Anshul},
+  title     = {Towards a Better Understanding of Reverse-Complement Equivariance for Deep Learning Models in Regulatory Genomics},
+  booktitle = {Proceedings of the Machine Learning in Computational Biology (MLCB) Workshop, PMLR},
+  volume    = {165},
+  year      = {2022},
+  url       = {https://proceedings.mlr.press/v165/zhou22a.html},
+}
+
+@article{Ma2025rc,
+  author    = {Ma, Mingqian},
+  title     = {Reverse-Complement Consistency for {DNA} Language Models},
+  journal   = {arXiv preprint arXiv:2509.18529},
+  year      = {2025},
+}
+
+@article{Brown2021rc,
+  author    = {Mallet, Vincent and Vert, Jean-Philippe},
+  title     = {Reverse-Complement Equivariant Networks for {DNA} Sequences},
+  journal   = {bioRxiv},
+  year      = {2021},
+  doi       = {10.1101/2021.06.03.446953},
+}
+
+% --- Class Imbalance ---
+
+@inproceedings{Menon2021,
+  author    = {Menon, Aditya Krishna and Jayasumana, Sadeep and Rawat, Ankit Singh and Jain, Himanshu and Veit, Andreas and Kumar, Sanjiv},
+  title     = {Long-Tail Learning via Logit Adjustment},
+  booktitle = {International Conference on Learning Representations (ICLR)},
+  year      = {2021},
+}
+
+@inproceedings{Cui2019,
+  author    = {Cui, Yin and Jia, Menglin and Lin, Tsung-Yi and Song, Yang and Belongie, Serge},
+  title     = {Class-Balanced Loss Based on Effective Number of Samples},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {9268--9277},
+  year      = {2019},
+}
+
+% --- Genome Databases ---
+
+@article{Parks2022,
+  author    = {Parks, Donovan H. and Chuvochina, Maria and Rinke, Christian and Mussig, Aaron J. and Chaumeil, Pierre-Alain and Hugenholtz, Philip},
+  title     = {{GTDB}: An Ongoing Census of Bacterial and Archaeal Diversity through a Phylogenetically Consistent, Rank Normalized and Complete Genome-Based Taxonomy},
+  journal   = {Nucleic Acids Research},
+  volume    = {50},
+  number    = {D1},
+  pages     = {D785--D794},
+  year      = {2022},
+  doi       = {10.1093/nar/gkab776},
+}
+
+% --- Sample-level / community-level evaluation metrics ---
+
+@article{Lu2017,
+  author    = {Lu, Jennifer and Breitwieser, Florian P. and Thielen, Peter and Salzberg, Steven L.},
+  title     = {{Bracken}: Estimating Species Abundance in Metagenomics Samples},
+  journal   = {PeerJ Computer Science},
+  volume    = {3},
+  pages     = {e104},
+  year      = {2017},
+  doi       = {10.7717/peerj-cs.104},
+}
+
+@article{BrayCurtis1957,
+  author    = {Bray, J. Roger and Curtis, J. T.},
+  title     = {An Ordination of the Upland Forest Communities of Southern {Wisconsin}},
+  journal   = {Ecological Monographs},
+  volume    = {27},
+  number    = {4},
+  pages     = {325--349},
+  year      = {1957},
+  doi       = {10.2307/1942268},
+}
+
+@article{Sczyrba2017,
+  author    = {Sczyrba, Alexander and Hofmann, Peter and Belmann, Peter and Koslicki, David and Janssen, Stefan and Dr{\"o}ge, Johannes and Gregor, Ivan and Majda, Stephan and Fiedler, Jessika and Dahms, Eik and others},
+  title     = {Critical Assessment of Metagenome Interpretation---A Benchmark of Metagenomics Software},
+  journal   = {Nature Methods},
+  volume    = {14},
+  number    = {11},
+  pages     = {1063--1071},
+  year      = {2017},
+  doi       = {10.1038/nmeth.4458},
+}
+
+@article{Meyer2022cami2,
+  author    = {Meyer, Fernando and Fritz, Adrian and Deng, Zhi-Luo and Koslicki, David and Lesker, Till Robin and Gurevich, Alexey and Robertson, Gary and Alser, Mohammed and Antipov, Dmitry and Beghini, Francesco and others},
+  title     = {Critical Assessment of Metagenome Interpretation: the Second Round of Challenges},
+  journal   = {Nature Methods},
+  volume    = {19},
+  number    = {4},
+  pages     = {429--440},
+  year      = {2022},
+  doi       = {10.1038/s41592-022-01431-4},
+}
+
+@article{McIntyre2017,
+  author    = {McIntyre, Alexa B. R. and Ounit, Rachid and Afshinnekoo, Ebrahim and Prill, Robert J. and H{\'e}naff, Elizabeth and Alexander, Noah and Minot, Samuel S. and Danko, David and Foox, Jonathan and Ahsanuddin, Sofia and others},
+  title     = {Comprehensive Benchmarking and Ensemble Approaches for Metagenomic Classifiers},
+  journal   = {Genome Biology},
+  volume    = {18},
+  pages     = {182},
+  year      = {2017},
+  doi       = {10.1186/s13059-017-1299-7},
+}
