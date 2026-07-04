@@ -25,7 +25,8 @@ sections/                    本文各節（\input 進 main.tex）
 supplementary.tex            補充材料（獨立 article，可單獨出 PDF）
 cover_letter.tex             投稿信（說明為何適合 BIB + AI 揭露）
 references.bib               參考文獻
-figures/                     圖檔（主文用 5 張 + 供補充選用的額外圖）
+figures/                     主文 7 張向量圖（PDF，字體已統一 DejaVu Sans）
+figures_src/                 繪圖原始碼（figstyle.py 共用樣式 + make_figures.py）
 oup-authoring-template.cls   OUP 官方 class（內含，勿改）
 oup-plain.bst                OUP numbered 引用樣式
 oup-abbrvnat.bst             OUP author–year 引用樣式（備用）
@@ -81,6 +82,33 @@ latexmk -pdf cover_letter.tex
 - **P0 out-of-genome generalization 實驗**：closed-set 98.7% 被質疑是 k-mer lookup
   的最大風險。§8 已主動揭露並說明「revision 可補」，但先做完最穩。
 - **Bracken / Centrifuge baseline、ZymoBIOMICS 真實資料**：§8 已列為 known gap。
+
+## 圖（統一字體 + 數據核對）
+
+主文除 Fig.1（TikZ 架構圖，LaTeX 直接畫）外，其餘圖全部由
+`figures_src/make_figures.py` 以**單一共用樣式** `figures_src/figstyle.py` 生成
+（DejaVu Sans、統一字級、向量 PDF、字體內嵌），解決先前各圖字體不一（thesis 用
+serif、benchmark PNG 用預設字體）的問題。所有數字取自
+`benchmark_results/THESIS_NUMBERS.md`（已逐一核對）。
+
+7 張圖：
+- `data_scaling.pdf` — NT-v2 6-mer 資料規模飽和（500K→250M）
+- `backbone_ablation.pdf` — pre-training vs tokenization 分解（+13.2 / +20.4 pp）
+- `rc_tta_benefit.pdf` — RC-TTA 各設定增益（+0.08–1.54 pp）
+- `train_fit.pdf` — **新增**：train vs val（6-mer 連訓練都 fit 不了、13-mer 可）
+- `kmer_baselines.pdf` — **新增**：13-mer 非 lookup（NB 74.9% > NT-v2 67%）
+- `cross_setting_comparison.pdf` — sample-level 豐度 Pearson r + Bray–Curtis
+- `tradeoff_abundance_detection.pdf` — **改**：豐度 vs 偵測權衡（取代原誤導的單模型 ROC）
+
+**兩處圖/數據不一致已修**（沿用 thesis 素材造成）：舊 `cross_setting_comparison.png`
+其實是 r/BC 條圖卻被寫成散點；舊 `roc_detection.png` 只有單模型、沒有 Kraken2。
+圖說已改成與實際圖一致。
+
+重新生成圖：
+```bash
+conda activate gfm            # 需 matplotlib
+cd figures_src && python make_figures.py   # 覆蓋 ../figures/*.pdf
+```
 
 ## 數字來源
 

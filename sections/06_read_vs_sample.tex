@@ -46,11 +46,14 @@ NT-v2 genus-balanced     & 37.2\% & 0.862 & 0.420 \\
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{cross_setting_comparison.png}
-\caption{\textbf{Sample-level abundance across settings.} Predicted versus true
-genus relative abundance for each model. Points hug the diagonal even for
-mid-accuracy models, illustrating how independent per-read errors cancel in
-aggregate; the genus-balanced model departs from the diagonal.}
+\includegraphics[width=\textwidth]{cross_setting_comparison.pdf}
+\caption{\textbf{Sample-level abundance fidelity across settings} on the
+natural-distribution pool (9$\times$10K reads), sorted by Pearson $r$; read-level
+accuracy is shown in parentheses. Abundance correlation stays high
+($r\approx0.99$) down to $\sim$60\% read accuracy because independent per-read
+errors cancel in aggregate. Genus-balancing is the clear outlier
+($r=0.86$, Bray--Curtis $0.42$): it skews predictions toward rare genera and
+distorts the natural composition.}
 \label{fig:abund}
 \end{figure*}
 
@@ -93,11 +96,14 @@ MT 6-mer             & 51.5\% & 0.983 & 0.177 & 0.576 & 9.2\% \\
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{roc_detection.png}
-\caption{\textbf{Genus detection ROC.} Kraken\,2 dominates detection of
-present-versus-absent genera, especially in the high-specificity regime that
-matters for controlling false positives, while neural 6-mer models are weak
-detectors despite competitive abundance correlation.}
+\includegraphics[width=\columnwidth]{tradeoff_abundance_detection.pdf}
+\caption{\textbf{Abundance versus detection trade-off} on the coverage-matched
+in-database genus pool (85{,}819 reads); marker area scales with ROC AUC. Neural
+models cluster at high abundance fidelity (Pearson $r$) but low detection
+sensitivity, whereas Kraken\,2 is the opposite---the strongest detector
+(sensitivity 93.5\% at 95\% specificity, ROC AUC 0.97) but the weakest at
+abundance ($r=0.82$). No single method wins both; the overlapping-13-mer model
+is the most balanced.}
 \label{fig:kraken}
 \end{figure}
 

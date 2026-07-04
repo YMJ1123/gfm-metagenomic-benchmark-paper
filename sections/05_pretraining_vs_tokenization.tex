@@ -82,6 +82,17 @@ cannot memorize the training data, the bottleneck is the input representation,
 not capacity, data, or generalization: the non-overlapping 6-mer tokens simply
 do not carry enough separable signal for a 150\,bp read.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{train_fit.pdf}
+\caption{\textbf{The ceiling is representational, not one of capacity.} Training
+versus validation genus accuracy. The 6-mer model cannot fit the training set
+past $\sim$66\% (train $\approx$ validation), whereas the overlapping-13-mer
+model fits to 98.9\%. A model that cannot memorize its training data is limited
+by its input representation, not by capacity or data.}
+\label{fig:trainfit}
+\end{figure}
+
 \subsection{Is the 13-mer result just closed-set lookup?}
 \label{sec:lookup}
 
@@ -97,7 +108,20 @@ full multinomial $k$-mer naive Bayes---using $P(k\text{-mer}\mid\text{genus})$
 without any neural network---reaches 74.9\%. The MT 13-mer network adds a
 further $+13$ pp over naive Bayes (87.5\%), capturing co-occurrence structure
 beyond the naive-Bayes independence assumption. The mechanism is therefore
-learned high-dimensional composition, \emph{not} exact-match lookup.
+learned high-dimensional composition, \emph{not} exact-match lookup
+(Figure~\ref{fig:kmer}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{kmer_baselines.pdf}
+\caption{\textbf{Composition, not lookup.} Genus Top-1 accuracy of non-neural
+$k$-mer classifiers on the same 50M-read reference and test pool, versus the
+neural models. Exact-match unique-key lookup fails (0.7\%) because $k=13$ is not
+genus-unique; a parameter-free multinomial 13-mer naive Bayes already reaches
+74.9\%, \emph{exceeding} the 498M-parameter pre-trained NT-v2 (67\%). The neural
+13-mer model adds a further $+13$ pp over naive Bayes.}
+\label{fig:kmer}
+\end{figure}
 
 This analysis also delivers the paper's sharpest single comparison: a
 parameter-free 13-mer naive Bayes (74.9\%) \emph{beats} the 498M-parameter
