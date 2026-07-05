@@ -85,26 +85,41 @@ def fig_backbone_ablation():
 # Fig. kmer_baselines (NEW) : is 13-mer just lookup?  non-neural baselines
 # ----------------------------------------------------------------------
 def fig_kmer_baselines():
-    labels = ["Unique-key\nlookup",
-              "Dominant-\ngenus vote",
-              "13-mer\nnaive Bayes",
-              "NT-v2 6-mer\n(498M)",
-              "MT 13-mer\nneural"]
-    vals   = [0.72, 35.3, 74.9, 67.0, 87.5]
-    colors = [LGREY, GREY, ORANGE, BLUE, TEAL]
-    fig, ax = plt.subplots(figsize=(4.4, 3.1))
-    x = np.arange(len(vals))
-    bars = ax.bar(x, vals, color=colors, width=0.66, zorder=3)
-    for b, v in zip(bars, vals):
-        ax.text(b.get_x()+b.get_width()/2, v+1.6, f"{v:.1f}", ha="center",
-                va="bottom", fontsize=8)
+    # Same-method isolation: fix classifier, vary k (6-mer vs 13-mer);
+    # fix k, vary method (parameter-free naive Bayes vs neural net).
+    groups = ["6-mer\n(NT-v2 tokenization)", "13-mer\n(overlapping)"]
+    nb     = [25.9, 74.9]          # multinomial k-mer naive Bayes (no NN)
+    neural = [67.0, 87.5]          # NT-v2 498M (6-mer) / MetaTransformer (13-mer)
+    x = np.arange(2); w = 0.36
+    fig, ax = plt.subplots(figsize=(4.4, 3.2))
+    b1 = ax.bar(x-w/2, nb,     w, color=ORANGE, zorder=3, label="Naive Bayes (no NN)")
+    b2 = ax.bar(x+w/2, neural, w, color=[BLUE, TEAL], zorder=3)
+    for bars in (b1, b2):
+        for b in bars:
+            ax.text(b.get_x()+b.get_width()/2, b.get_height()+1.4,
+                    f"{b.get_height():.1f}", ha="center", va="bottom", fontsize=8)
+    # neural gain shown over the white space above each NB bar (bigger on weaker k)
+    ax.annotate("", xy=(x[0]-0.06, 67.0), xytext=(x[0]-0.06, 25.9),
+                arrowprops=dict(arrowstyle="<->", color="#333", lw=0.9))
+    ax.text(x[0]-0.11, 46, "+41 pp", fontsize=7.5, color="#333",
+            ha="right", va="center")
+    ax.annotate("", xy=(x[1]-0.06, 87.5), xytext=(x[1]-0.06, 74.9),
+                arrowprops=dict(arrowstyle="<->", color="#333", lw=0.9))
+    ax.text(x[1]-0.11, 81.2, "+13 pp", fontsize=7.5, color="#333",
+            ha="right", va="center")
+    # crossing line: 13-mer NB already beats 6-mer neural
     ax.axhline(74.9, color=ORANGE, lw=0.8, ls="--", zorder=1)
-    ax.text(0.05, 77.5, "naive Bayes (no NN) $>$ 498M NT-v2",
-            color=ORANGE, fontsize=7.5, ha="left", va="bottom")
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=7)
+    ax.text(-0.42, 76.3, "13-mer naive Bayes $>$ 6-mer 498M NT-v2",
+            color=ORANGE, fontsize=7, ha="left", va="bottom")
+    # legend: NB (orange) + neural (blue/teal)
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color=ORANGE, label="Naive Bayes (no NN)"),
+                       Patch(color=BLUE, label="NT-v2 6-mer (498M)"),
+                       Patch(color=TEAL, label="MetaTransformer 13-mer")],
+              fontsize=6.8, loc="upper left", borderpad=0.3, labelspacing=0.3)
+    ax.set_xticks(x); ax.set_xticklabels(groups, fontsize=8)
     ax.set_ylabel("Genus Top-1 accuracy (%)")
-    ax.set_title("Composition, not lookup: $k$-mer baselines")
+    ax.set_title("Tokenization dominates the model")
     ax.set_ylim(0, 100)
     save(fig, "kmer_baselines.pdf")
 

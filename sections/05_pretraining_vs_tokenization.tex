@@ -114,20 +114,33 @@ learned high-dimensional composition, \emph{not} exact-match lookup
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{kmer_baselines.pdf}
-\caption{\textbf{Composition, not lookup.} Genus Top-1 accuracy of non-neural
-$k$-mer classifiers on the same 50M-read reference and test pool, versus the
-neural models. Exact-match unique-key lookup fails (0.7\%) because $k=13$ is not
-genus-unique; a parameter-free multinomial 13-mer naive Bayes already reaches
-74.9\%, \emph{exceeding} the 498M-parameter pre-trained NT-v2 (67\%). The neural
-13-mer model adds a further $+13$ pp over naive Bayes.}
+\caption{\textbf{Tokenization dominates the model.} Genus Top-1 accuracy with
+the classifier held fixed---a parameter-free multinomial $k$-mer naive Bayes---or
+as a neural network, for 6-mer versus overlapping 13-mer tokenization (same
+50M-read reference and test pool). With the method fixed, moving to 13-mer nearly
+triples accuracy ($25.9\%\!\rightarrow\!74.9\%$), isolating $k$-mer length as the
+decisive variable; the neural gain is larger on the weaker tokenizer ($+41$ pp on
+6-mer versus $+13$ pp on 13-mer). The parameter-free 13-mer naive Bayes (74.9\%)
+already exceeds the 498M-parameter pre-trained NT-v2 on 6-mer (67\%). Exact-match
+unique-key lookup fails (0.7\%), confirming this is learned composition, not
+lookup.}
 \label{fig:kmer}
 \end{figure}
 
-This analysis also delivers the paper's sharpest single comparison: a
-parameter-free 13-mer naive Bayes (74.9\%) \emph{beats} the 498M-parameter
-pre-trained NT-v2 with 6-mer tokenization (67\%). Representation ($k$-mer
-length) is more decisive than model capacity or pre-training. We are explicit
-about the accompanying caveat: because the reference genomes are nearly
+This analysis also isolates $k$-mer length as the decisive variable. Holding the
+classifier fixed and applying the same multinomial naive Bayes to 6-mer
+composition (NT-v2's tokenization) yields only 25.9\%: moving from 6-mer to
+13-mer alone nearly triples accuracy ($25.9\%\!\rightarrow\!74.9\%$) with no
+change to the model. Conversely, the neural network contributes \emph{more} when
+the tokenizer is weaker---it adds $+41$ pp on 6-mer (25.9\% naive Bayes to 67.0\%
+for the 498M-parameter NT-v2) but only $+13$ pp on 13-mer (74.9\% to 87.5\%)---so
+a poorer input representation forces the model to work harder to recover the same
+signal. Most strikingly, the parameter-free 13-mer naive Bayes (74.9\%) still
+\emph{beats} the pre-trained 498M-parameter NT-v2 on 6-mer (67\%): no amount of
+capacity or pre-training on 6-mer catches trivial statistics on 13-mer.
+Representation ($k$-mer length) is more decisive than model capacity or
+pre-training. We are explicit about the accompanying caveat: because the
+reference genomes are nearly
 completely covered by the test organisms, the 98.7\% figure characterizes
 \emph{closed-set} classification against known genomes; novel-genome
 generalization is a separate question that we flag as the primary limitation
