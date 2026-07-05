@@ -19,6 +19,13 @@
 % tabularx (tabularx is incompatible with the class's rule macros).
 \usetikzlibrary{arrows.meta,positioning}
 
+% Enable natbib sort&compress so multi-citations render as [8-14], not
+% [8, 9, 10, 11, 12, 13, 14]. (The class loads natbib itself, so we set the
+% switches directly rather than via a package option.)
+\makeatletter
+\def\NAT@sort{\@ne}\def\NAT@cmprs{\@ne}
+\makeatother
+
 \graphicspath{{figures/}}
 
 % The OUP class defaults the running-head society logo to a PNAS Nexus image
@@ -123,7 +130,12 @@ tokenization.
 \input{sections/08_limitations}
 \input{sections/09_endmatter}
 
-\bibliographystyle{oup-plain}
+% Use unsrtnat (numbered, in order of appearance = Vancouver/BIB style).
+% NB: do NOT use the bundled oup-plain.bst here -- it emits bare \bibitem{key}
+% entries, which makes the class flip natbib back to author-year mode and
+% produces empty "[ , ]" citations. unsrtnat writes labelled \bibitem[..]{key}
+% so the numeric citations resolve correctly.
+\bibliographystyle{unsrtnat}
 \bibliography{references}
 
 \end{document}

@@ -42,7 +42,11 @@ oup-abbrvnat.bst             OUP author–year 引用樣式（備用）
 - **Key Points**：`\boxedtext{Key Points}{...}`，5 點（規定至多 5 點）
 - **Abstract**：結構式 Background/Methods/Results/Conclusion，且**無任何引用**（規定要求）
 - **Keywords**：6 個（規定至多 6 個）
-- **引用格式**：numbered（方括號 [1, 3–5]，PubMed 慣例）— `oup-plain.bst`
+- **引用格式**：numbered，按出現順序（方括號 [1, 3–5]，PubMed/Vancouver 慣例）—
+  用 `\bibliographystyle{unsrtnat}` + natbib sort&compress。
+  ⚠️ **不要用官方 `oup-plain.bst`**：它輸出裸 `\bibitem{key}`，會讓 class 在
+  `numbered` 模式下把 natbib 翻回 author-year，導致內文變空的 `[ , ]`、書目無編號。
+  `unsrtnat`（有 `\bibitem[label]{key}`）才正常。
 - **必備 endmatter**：Conflicts of interest、Funding、Data availability、Code
   availability、Author contributions（CRediT）、Acknowledgments（含 AI 揭露）
 
