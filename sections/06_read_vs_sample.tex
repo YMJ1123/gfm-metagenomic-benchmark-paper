@@ -23,6 +23,16 @@ report $r$ as a range rather than a single value, because it is pool-dependent
 model, consistent with Section~\ref{sec:scaling}, is the clear outlier at
 $r=0.862$.
 
+We deliberately distinguish three levels of sample-level evaluation, of
+increasing difficulty: (i) fixed-composition random partitions of a common read
+pool (used here); (ii) sparse synthetic communities with variable composition;
+and (iii) real or mock communities with authentic error profiles and incomplete
+database coverage. The present results establish (i)---a stability test under a
+fixed expected composition---and should not be read as evidence for (iii): they
+show that per-read errors cancel when the community is held fixed, not that a
+6-mer model can profile an arbitrary real sample. Real and mock-community
+validation (Section~\ref{sec:limitations}) remains required before deployment.
+
 \begin{table}[t]
 \centering
 \caption{\textbf{Sample-level genus abundance} on the natural-distribution
@@ -63,11 +73,16 @@ On the coverage-matched genus pool (85{,}819 reads whose source species are in
 the Kraken\,2 database), the picture is more nuanced and, we think, the most
 interesting practical result (Table~\ref{tab:kraken},
 Figure~\ref{fig:kraken}). For \emph{abundance estimation}, the NT-v2 model
-attains Pearson $r=0.992$, \emph{exceeding} Kraken\,2's $r=0.823$. The reason is
-structural: Kraken\,2 leaves $\sim$30\% of reads unclassified, and because that
-abstention is spread across taxa it uniformly deflates predicted abundances,
-distorting the profile. A neural classifier that always emits a label avoids
-this systematic bias. For \emph{detection}---identifying which genera are
+attains Pearson $r=0.992$, exceeding the $r=0.823$ of \emph{raw} Kraken\,2
+report counts under this coverage-matched protocol. The reason is structural:
+Kraken\,2 leaves $\sim$30\% of reads unclassified, and because that abstention is
+spread across taxa it uniformly deflates predicted abundances, distorting the
+profile. A neural classifier that always emits a label avoids this systematic
+bias. We stress that this comparison is against \emph{raw} Kraken\,2 counts, not
+a Bayesian re-estimation pipeline: Bracken \citep{Lu2017} is designed precisely
+to correct such abundance estimates and is the appropriate abundance baseline; we
+report raw Kraken\,2 here and flag Bracken as a necessary further comparison
+(Section~\ref{sec:limitations}). For \emph{detection}---identifying which genera are
 present---the ranking reverses: Kraken\,2 achieves ROC AUC 0.966 and 93.5\%
 sensitivity at 95\% specificity, far above NT-v2 6-mer (AUC 0.681, 17.5\%
 sensitivity). The overlapping-13-mer model sits between the two on detection
@@ -107,14 +122,24 @@ is the most balanced.}
 \label{fig:kraken}
 \end{figure}
 
-\subsection{Species level and the low-abundance noise floor}
+\subsection{Species level reveals the same tokenizer bottleneck}
 
 At the species level (1{,}535 classes) the gap widens in Kraken\,2's favour on
 the coverage-matched pool (77.2\% read accuracy, $r=0.847$), because exact long
-$k$-mers resolve fine taxonomy that 6-mer neural models cannot. This is a
-concrete boundary of the current GFM approach: species-level classification
-from 150\,bp needs either a long-$k$ tokenizer or a stronger hierarchical
-router; a flat 6-mer model is insufficient. Conversely, Kraken\,2's dependence
+$k$-mers resolve fine taxonomy that 6-mer neural models cannot: a flat NT-v2
+6-mer species classifier reaches only 17.6\% Top-1, versus $\sim$50\% for the
+overlapping-13-mer model. The natural remedy is a hierarchical pipeline---route a
+read to its genus, then to a species within that genus---but this only helps with
+a near-perfect router. Under \emph{oracle} genus routing, per-genus classifiers
+lift species Top-1 to 29.5\%; with a \emph{realistic} learned router (genus
+accuracy $\sim$66\%, itself the 6-mer ceiling of Section~\ref{sec:decomp}) the
+same pipeline falls to 15.6\%---at or below the flat model. The bottleneck is
+therefore the genus router, not the per-genus heads (oracle routing makes
+genus-level accuracy $1.00$ by construction), so the 6-mer genus ceiling
+propagates directly into species performance. Overlapping long-$k$ tokenization
+is thus the shared fix for both genus routing and intra-genus separation; adding
+a sub-genus split \emph{without} a better representation instead hurts (a
+negative result; Supplementary). Conversely, Kraken\,2's dependence
 on database coverage is a real liability---on 219 species outside its custom
 database it scores 0\% while the neural models retain non-zero posterior mass,
 the flip side of the abstention behaviour above.

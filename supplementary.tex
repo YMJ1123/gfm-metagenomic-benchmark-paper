@@ -69,11 +69,64 @@ MT 13-mer (s1) & MetaTransformer encoder, 13-mer overlap & from scratch \\
 \end{tabularx}
 \end{table}
 
-\noindent\textit{[Insert exact hyperparameters before submission: LoRA rank/alpha/dropout,
-target modules, optimizer, learning-rate schedule, batch size, epochs, warm-up,
-sequence length, and the literal training command for each run. These are
-tracked in the \texttt{config.yaml} of each run directory in the code
-repository.]}
+\begin{table}[h]
+\centering
+\caption{NT-v2 + LoRA training configuration (genus task). Values from the
+run configuration files in the code repository; the 5M run (v8) differs only as
+noted.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xl@{}}
+\toprule
+Hyperparameter & Value \\
+\midrule
+Backbone checkpoint & \texttt{InstaDeepAI/nucleotide-transformer-v2-500m-multi-species} \\
+Tokenizer & native non-overlapping 6-mer \\
+Trainable / total params & 5.54M / 498.6M \\
+LoRA rank $r$ / $\alpha$ / dropout & 16 / 32 / 0.05 \\
+LoRA target modules & query, key, value \\
+Classification head & attention pooling (hidden 512, 4 heads, dropout 0.15) \\
+Max token length & 32 \\
+Batch size & 256 (5M: 32) \\
+Gradient accumulation & 1 (5M: 2) \\
+Optimizer & AdamW, weight decay 0.02, max grad norm 5.0 \\
+Learning rate (head / backbone) & $5\times10^{-4}$ / $3\times10^{-5}$ \\
+LR schedule / warm-up & warm-up ratio 0.05 \\
+Epochs / early-stopping patience & 30 / 5 \\
+Precision & mixed precision (AMP); gradient checkpointing \\
+Reverse-complement augmentation & training on; RC-TTA at evaluation \\
+Validation split / seed & 10\% / 42 \\
+50M init & warm-started from the 5M (v8) checkpoint \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent The MetaTransformer variants follow the original architecture
+(Wichmann et al., \textit{NAR Genom.\ Bioinform.}\ 2023), trained from scratch,
+differing only in the tokenizer
+($k$ and stride). Exact per-run configuration files, the literal training
+commands, and the SLURM scripts are provided in the code repository (a
+representative genus run is \texttt{slurm/run\_genus\_v9\_50M.sh}). \emph{Before
+submission, confirm the optimizer/scheduler names against
+\texttt{scripts/train.py} and insert the repository/Zenodo DOI.}
+
+\section{Pre-trained GFM backbone comparison}
+\begin{table}[h]
+\centering
+\caption{Genus Top-1 accuracy (120 classes) for pre-trained backbones
+fine-tuned identically at 5M reads (RC-TTA). NT-v2 is the strongest, but all
+remain far below the overlapping-13-mer ceiling; the 50M DNABERT/DNABERT-2 runs
+did not complete and are omitted.}
+\small
+\begin{tabularx}{\linewidth}{@{}Xcc@{}}
+\toprule
+Backbone & Top-1 (RC-TTA) & macro-F1 \\
+\midrule
+NT-v2 (500M, 6-mer) & 63.05\% & 0.380 \\
+DNABERT (6-mer) & 61.78\% & 0.384 \\
+DNABERT-2 (BPE) & 58.88\% & 0.323 \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Full read-level results}
 \begin{table}[h]
@@ -126,7 +179,7 @@ MT 13-mer 250M     & 98.9\% & 97.5\% \\
 a 6-mer control that isolates $k$-mer length as the only variable. Genus Top-1
 accuracy (\%). Holding the method fixed, naive Bayes on 13-mer ($74.9$) is
 $\sim$3$\times$ that on 6-mer ($25.9$); the neural gain is larger on the weaker
-6-mer tokenizer ($+41$ pp) than on 13-mer ($+13$ pp); and the parameter-free
+6-mer tokenizer ($+41$ pp) than on 13-mer ($+13$ pp); and the non-neural
 13-mer naive Bayes ($74.9$) exceeds the 498M-parameter NT-v2 on 6-mer ($67$).
 s1 = overlapping (stride 1); s6 = non-overlapping (stride 6, the NT-v2 setting).}
 \small

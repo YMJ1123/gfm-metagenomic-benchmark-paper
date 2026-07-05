@@ -16,7 +16,12 @@ pre-training advantage (Figure~\ref{fig:ablation}). Pre-training on genomic
 sequence thus provides a real, transferable benefit for this task even though
 the pre-training corpus is not microbial. This is the strongest case for GFMs
 in metagenomics: the representation learned during pre-training is worth more
-than 13 accuracy points that no amount of extra 6-mer data recovers.
+than 13 accuracy points that no amount of extra 6-mer data recovers. This benefit
+is not specific to one backbone: across pre-trained GFMs fine-tuned identically at
+5M reads, NT-v2 was best (63.1\% genus Top-1) ahead of DNABERT (61.8\%) and
+DNABERT-2 (58.9\%), yet all three remained bounded well below the
+overlapping-13-mer ceiling---their (sub-)6-mer-scale tokenizers, not the choice of
+backbone, are the limiting factor (Supplementary).
 
 \subsection{Tokenization, at fixed capacity, helps more}
 
@@ -38,7 +43,10 @@ the GFM approach here---not backbone capacity and not the adaptation strategy.
 scale.} Genus Top-1 accuracy (120 classes). MetaTransformer (MT) rows are
 trained from scratch; NT-v2 is pre-trained. Only overlapping 13-mer reaches the
 high-80s/90s and continues to improve from 50M to 250M reads, whereas 6-mer
-representations plateau at 45--67\% regardless of pre-training or data.}
+representations plateau at 45--67\% regardless of pre-training or data. NT-v2
+values use reverse-complement test-time augmentation (RC-TTA); MT values are
+forward-only (RC-TTA adds $\sim$0.7 pp), so the tokenization gap is if anything
+slightly understated.}
 \label{tab:tok}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllcc@{}}
 \toprule
@@ -115,12 +123,12 @@ learned high-dimensional composition, \emph{not} exact-match lookup
 \centering
 \includegraphics[width=\columnwidth]{kmer_baselines.pdf}
 \caption{\textbf{Tokenization dominates the model.} Genus Top-1 accuracy with
-the classifier held fixed---a parameter-free multinomial $k$-mer naive Bayes---or
+the classifier held fixed---a non-neural multinomial $k$-mer naive Bayes---or
 as a neural network, for 6-mer versus overlapping 13-mer tokenization (same
 50M-read reference and test pool). With the method fixed, moving to 13-mer nearly
 triples accuracy ($25.9\%\!\rightarrow\!74.9\%$), isolating $k$-mer length as the
 decisive variable; the neural gain is larger on the weaker tokenizer ($+41$ pp on
-6-mer versus $+13$ pp on 13-mer). The parameter-free 13-mer naive Bayes (74.9\%)
+6-mer versus $+13$ pp on 13-mer). The non-neural 13-mer naive Bayes (74.9\%)
 already exceeds the 498M-parameter pre-trained NT-v2 on 6-mer (67\%). Exact-match
 unique-key lookup fails (0.7\%), confirming this is learned composition, not
 lookup.}
@@ -135,7 +143,7 @@ change to the model. Conversely, the neural network contributes \emph{more} when
 the tokenizer is weaker---it adds $+41$ pp on 6-mer (25.9\% naive Bayes to 67.0\%
 for the 498M-parameter NT-v2) but only $+13$ pp on 13-mer (74.9\% to 87.5\%)---so
 a poorer input representation forces the model to work harder to recover the same
-signal. Most strikingly, the parameter-free 13-mer naive Bayes (74.9\%) still
+signal. Most strikingly, the non-neural 13-mer naive Bayes (74.9\%) still
 \emph{beats} the pre-trained 498M-parameter NT-v2 on 6-mer (67\%): no amount of
 capacity or pre-training on 6-mer catches trivial statistics on 13-mer.
 Representation ($k$-mer length) is more decisive than model capacity or

@@ -30,7 +30,14 @@ dominates real communities. Prior neural approaches such as DeepMicrobes,
 BERTax, and MetaTransformer show that learned read classifiers are feasible
 \citep{Liang2020,Mock2022bertax,Wichmann2023}, but they do not isolate
 \emph{why} they work, and they predate the current generation of large
-pre-trained backbones.
+pre-trained backbones. More recently, ICCTax adapted the HyenaDNA genomic
+language model to hierarchical taxonomic classification with an explicit focus on
+out-of-distribution generalization \citep{Gao2025icctax}. Our focus is
+complementary rather than competing: ICCTax classifies kilobase-scale contigs
+(1{,}500\,bp) with a single purpose-built classifier, whereas we evaluate
+150\,bp shotgun reads, benchmark several transformer GFMs rather than proposing
+one model, and isolate whether pre-training, tokenization, or data scale
+controls performance.
 
 The practical decision facing a method developer is therefore not ``does a
 GFM work at all'' but ``which design choice actually matters''. A GFM-based

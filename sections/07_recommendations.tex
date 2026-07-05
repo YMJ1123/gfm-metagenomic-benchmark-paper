@@ -3,7 +3,29 @@
 
 The controlled results above translate into concrete guidance. We separate
 recommendations for practitioners choosing or applying a tool today from
-recommendations for those designing the next generation of models.
+recommendations for those designing the next generation of models. Box~1 first
+distils the benchmark itself into a reusable protocol; Box~2 is a decision guide
+for choosing a method.
+
+\begin{boxtext}[A protocol for evaluating GFMs in short-read taxonomy]
+\begin{enumerate}[1.]\setlength{\itemsep}{1pt}
+\item Fix the taxonomy level (genus/species) and read length up front.
+\item Build both read-disjoint \emph{and} genome-disjoint splits; report
+closed-set and out-of-reference results separately.
+\item Report nominal read counts \emph{and} unique-read counts (short-read
+simulation duplicates reads; scaling claims must not be duplicate scaling).
+\item Vary one axis at a time---pre-training, tokenizer, data scale---holding the
+architecture and evaluation fixed.
+\item Evaluate read-level accuracy, sample-level abundance, and presence/absence
+detection \emph{separately}; they do not track each other.
+\item Compare against both a raw exact-$k$-mer classifier (e.g.\ Kraken\,2) and an
+abundance-corrected pipeline (e.g.\ Kraken\,2$+$Bracken).
+\item State the strand-symmetry protocol (e.g.\ reverse-complement TTA) and apply
+it consistently across models.
+\item Release configs, exact commands, per-read predictions, and sample
+composition files.
+\end{enumerate}
+\end{boxtext}
 
 \subsection{For practitioners}
 
@@ -21,8 +43,9 @@ Read-level genus classification &
 Prefer an overlapping long-$k$ model (87\% vs 67\%); a 6-mer GFM is a distant
 second. \\[2pt]
 Sample-level abundance (composition) &
-A 67\%-accurate model is often sufficient ($r=0.99$) and can beat Kraken\,2 by
-avoiding abstention bias---but validate for systematic bias on your community. \\[2pt]
+A 67\%-accurate model is often sufficient ($r=0.99$) and can beat \emph{raw}
+Kraken\,2 counts by avoiding abstention bias---but compare against
+Kraken\,2$+$Bracken and validate for systematic bias on your community. \\[2pt]
 Presence/absence detection, esp.\ low-abundance taxa &
 Use Kraken\,2 (or another exact-$k$-mer tool); current 6-mer neural detectors
 are weak. Apply a calibrated abundance threshold above the $\sim$0.3\% noise
@@ -39,6 +62,22 @@ signal survives. Ask what $k$ and what stride the model uses. \\
 \botrule
 \end{tabular}
 \end{table*}
+
+\begin{boxtext}[Decision guide]
+\begin{itemize}\setlength{\itemsep}{1pt}
+\item \textbf{Low-abundance presence/absence?} Use an exact-$k$-mer pipeline
+(Kraken\,2/Bracken, Centrifuge); current 6-mer neural detectors are weak.
+\item \textbf{Known-genome, closed-set read classification?} Use an overlapping
+long-$k$ neural model (87\% vs 67\% at genus).
+\item \textbf{Only a 6-mer GFM available?} Do not expect data scaling to lift the
+ceiling; the tokenizer, not the data, is the limit.
+\item \textbf{Community abundance?} An always-labelling neural model can help,
+but calibrate a detection threshold and check for systematic bias; benchmark
+against Bracken.
+\item \textbf{Novel-genome discovery?} The current closed-set evidence is
+insufficient; out-of-genome validation is required first.
+\end{itemize}
+\end{boxtext}
 
 \subsection{For model builders}
 

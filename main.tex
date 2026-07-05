@@ -85,11 +85,15 @@ determines the performance ceiling: an overlapping-13-mer model trained from
 scratch reaches 87.4\% genus Top-1 accuracy versus 67.1\% for a pre-trained
 6-mer model on identical 50M-read data. The 6-mer model saturates beyond 50M
 reads ($+0.22$ percentage points to 250M) while the 13-mer model keeps scaling
-(87.5\% to 98.7\%). With tokenization fixed at 6-mer, pre-training contributes
-$+13.2$ percentage points. At the sample level, a 67\%-accurate read classifier
-attains Pearson $r=0.99$ for genus abundance---exceeding Kraken\,2
-($r=0.82$), whose $\sim$30\% abstention uniformly deflates predicted
-abundances---yet Kraken\,2 remains far stronger for low-abundance detection.
+(87.5\% to 98.7\%); the 6-mer model fails even to \emph{fit} its training set
+beyond $\sim$66\%, indicating a representational rather than an optimization
+ceiling. With tokenization fixed at 6-mer, pre-training contributes $+13.2$
+percentage points. At the sample level, under controlled synthetic compositions
+a 67\%-accurate read classifier attains Pearson $r=0.99$ for genus abundance and
+exceeds raw Kraken\,2 abundance estimates in our coverage-matched evaluation
+($r=0.82$; Kraken\,2's $\sim$30\% abstention deflates predicted abundances),
+although Kraken\,2 remains far stronger for low-abundance detection and
+abundance-corrected pipelines (e.g.\ Bracken) are an important further baseline.
 \textbf{Conclusion:} Tokenization design is the critical, and currently
 under-appreciated, factor for GFM-based metagenomic classification. We translate
 these findings into use-case-specific recommendations and argue that future
@@ -101,9 +105,10 @@ tokenization, benchmarking, short-read sequencing}
 
 \boxedtext{Key Points}{
 \begin{itemize}
-\item Under a fixed backbone, training-data volume dominates accuracy only up to
-a tokenizer-imposed ceiling: a non-overlapping 6-mer model saturates beyond 50M
-reads ($+0.22$ percentage points from 50M to 250M).
+\item Data scaling is tokenizer-dependent: increasing training data from 50M to
+250M reads yields almost no gain for a non-overlapping 6-mer model
+($+0.22$ percentage points) but an 11-point gain for an overlapping 13-mer model
+($87.5\%\!\rightarrow\!98.7\%$).
 \item Tokenization, not backbone pre-training, sets the performance ceiling: an
 overlapping 13-mer model trained from scratch reaches 87.4\% genus Top-1 versus
 67.1\% for a 498M-parameter pre-trained model under identical data.

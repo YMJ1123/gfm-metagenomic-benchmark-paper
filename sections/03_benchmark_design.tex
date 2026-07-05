@@ -49,10 +49,14 @@ The benchmark is organized so that each comparison isolates a single variable
         after aggregation, at the sample level, alongside Kraken\,2
         \citep{Wood2019}.
 \end{itemize}
-Because the axes are varied independently, the resulting deltas are causal with
-respect to each factor rather than confounded by simultaneous changes in model
-size, data, and tokenizer. Full hyperparameters, LoRA configuration, and
-training commands are given in the Supplementary Material.
+Because the axes are varied independently, the resulting deltas are more directly
+attributable to each design factor rather than confounded by simultaneous changes
+in model size, data, and tokenizer (this is a controlled ablation, not randomized
+causal inference). Throughout, cross-tokenizer comparisons use the same nominal
+read pools and the same held-out test pools, with unique-read counts reported
+separately so that data-scaling claims are not confounded by read duplication.
+Full hyperparameters, LoRA configuration, and training commands are given in the
+Supplementary Material.
 
 \begin{figure*}[t]
 \centering
