@@ -32,10 +32,12 @@ somewhat counter-intuitive: tokenization, not backbone pre-training or data
 scale, sets the ceiling for short-read taxonomy, and a non-neural 13-mer
 composition model can outperform a 498M-parameter pre-trained model. Third, we
 provide a dual read-level/sample-level evaluation and a coverage-matched
-comparison with Kraken\,2 that yields concrete, use-case-specific
-recommendations---including the non-obvious result that a mid-accuracy neural
-model can exceed \emph{raw} Kraken\,2 abundance estimates while remaining a weak
-detector. The manuscript is written to help readers decide whether to fine-tune
+comparison with Kraken\,2 (both raw and with Bracken re-estimation) that yields
+concrete, use-case-specific recommendations. Notably, a careful baseline shows
+that Kraken\,2's apparent abundance weakness is a raw-count artefact that Bracken
+corrects ($r=0.997$); we therefore place the neural models' genuine value in
+read-level accuracy and out-of-reference behaviour rather than over-claiming a
+sample-level abundance win. The manuscript is written to help readers decide whether to fine-tune
 an existing GFM, train a task-specific $k$-mer transformer, use a classical
 exact-$k$-mer classifier, or design a new microbial foundation model---and it
 provides a reusable evaluation protocol for doing so.

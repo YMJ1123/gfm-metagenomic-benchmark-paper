@@ -43,9 +43,10 @@ Read-level genus classification &
 Prefer an overlapping long-$k$ model (87\% vs 67\%); a 6-mer GFM is a distant
 second. \\[2pt]
 Sample-level abundance (composition) &
-A 67\%-accurate model is often sufficient ($r=0.99$) and can beat \emph{raw}
-Kraken\,2 counts by avoiding abstention bias---but compare against
-Kraken\,2$+$Bracken and validate for systematic bias on your community. \\[2pt]
+For in-database samples, Kraken\,2$+$Bracken is excellent ($r=0.997$) and has no
+neural competitor; a 67\%-accurate neural model is comparable ($r=0.99$) and
+useful when the reference is incomplete, but do not expect it to beat a
+Bracken-corrected pipeline. Compare against raw counts \emph{and} Bracken. \\[2pt]
 Presence/absence detection, esp.\ low-abundance taxa &
 Use Kraken\,2 (or another exact-$k$-mer tool); current 6-mer neural detectors
 are weak. Apply a calibrated abundance threshold above the $\sim$0.3\% noise
@@ -71,9 +72,9 @@ signal survives. Ask what $k$ and what stride the model uses. \\
 long-$k$ neural model (87\% vs 67\% at genus).
 \item \textbf{Only a 6-mer GFM available?} Do not expect data scaling to lift the
 ceiling; the tokenizer, not the data, is the limit.
-\item \textbf{Community abundance?} An always-labelling neural model can help,
-but calibrate a detection threshold and check for systematic bias; benchmark
-against Bracken.
+\item \textbf{Community abundance (in-database)?} Use Kraken\,2$+$Bracken
+($r=0.997$); a neural model is comparable but not better. Reach for the neural
+model mainly when the reference is incomplete.
 \item \textbf{Novel-genome discovery?} The current closed-set evidence is
 insufficient; out-of-genome validation is required first.
 \end{itemize}

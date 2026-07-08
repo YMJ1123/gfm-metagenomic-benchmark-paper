@@ -70,32 +70,39 @@ distorts the natural composition.}
 \subsection{Comparison with Kraken\,2: abundance versus detection}
 
 On the coverage-matched genus pool (85{,}819 reads whose source species are in
-the Kraken\,2 database), the picture is more nuanced and, we think, the most
-interesting practical result (Table~\ref{tab:kraken},
-Figure~\ref{fig:kraken}). For \emph{abundance estimation}, the NT-v2 model
-attains Pearson $r=0.992$, exceeding the $r=0.823$ of \emph{raw} Kraken\,2
-report counts under this coverage-matched protocol. The reason is structural:
-Kraken\,2 leaves $\sim$30\% of reads unclassified, and because that abstention is
-spread across taxa it uniformly deflates predicted abundances, distorting the
-profile. A neural classifier that always emits a label avoids this systematic
-bias. We stress that this comparison is against \emph{raw} Kraken\,2 counts, not
-a Bayesian re-estimation pipeline: Bracken \citep{Lu2017} is designed precisely
-to correct such abundance estimates and is the appropriate abundance baseline; we
-report raw Kraken\,2 here and flag Bracken as a necessary further comparison
-(Section~\ref{sec:limitations}). For \emph{detection}---identifying which genera are
-present---the ranking reverses: Kraken\,2 achieves ROC AUC 0.966 and 93.5\%
-sensitivity at 95\% specificity, far above NT-v2 6-mer (AUC 0.681, 17.5\%
-sensitivity). The overlapping-13-mer model sits between the two on detection
-(AUC 0.905, 66.5\%). The lesson is that ``which classifier is better'' has no
-single answer: it depends on whether the downstream question is \emph{how much}
-(abundance) or \emph{whether present} (detection).
+the Kraken\,2 database), we separate two questions---\emph{how much} (abundance)
+and \emph{whether present} (detection)---and compare the neural models against
+Kraken\,2 both as raw report counts and with Bracken re-estimation
+(Table~\ref{tab:kraken}, Figure~\ref{fig:kraken}). For abundance, raw Kraken\,2
+counts give only Pearson $r=0.823$: Kraken\,2 leaves $\sim$30\% of reads
+unclassified and, because that abstention is spread across taxa, it uniformly
+deflates predicted abundances. This is a fixable artefact, not a fundamental
+limit---Bracken \citep{Lu2017}, which re-estimates abundance from the same
+Kraken\,2 report, raises genus abundance to $r=0.997$ (Bray--Curtis $0.060$) on
+the same reads and database. Bracken therefore reaches the same near-perfect
+range as the neural models (MT 13-mer $r=0.999$, NT-v2 $r=0.992$):
+\textbf{the neural models have no sample-level abundance advantage over a
+properly configured classical pipeline.} (Bracken redistributes the whole report and cannot be restricted per
+read to the in-database subset; on the full 100K sample raw Kraken\,2 is
+$r=0.845$, so this is a like-for-like comparison.) For detection, Kraken\,2---and
+Bracken, which inherits its classifications---dominates (ROC AUC 0.966, 93.5\%
+sensitivity at 95\% specificity), far above the 6-mer neural detectors (NT-v2
+AUC 0.681, 17.5\%), with the overlapping-13-mer model in between (AUC 0.905,
+66.5\%). On in-database data, then, the classical Kraken\,2$+$Bracken pipeline is
+the stronger tool for \emph{both} abundance and detection; the neural models'
+genuine advantages lie elsewhere---higher read-level accuracy under a good
+tokenizer (MT 13-mer 94.9\% vs Kraken\,2 77.7\%) and graceful degradation
+outside the reference database (below, where Kraken\,2 scores 0\% on 219
+out-of-database species).
 
 \begin{table*}[t]
 \centering
 \caption{\textbf{Genus-level, coverage-matched comparison with Kraken\,2}
-(85{,}819 in-database reads). Neural models win on abundance correlation;
-Kraken\,2 dominates low-abundance detection. Sens@95 = sensitivity at 95\%
-specificity.}
+(85{,}819 in-database reads). Raw Kraken\,2 abundance is deflated by its
+$\sim$30\% abstention ($r=0.823$); re-estimating with Bracken raises Kraken\,2
+genus abundance to $r=0.997$ (main text), on par with the best neural model, so
+the neural advantage on abundance disappears against the proper pipeline.
+Kraken\,2 also dominates detection. Sens@95 = sensitivity at 95\% specificity.}
 \label{tab:kraken}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccccc@{}}
 \toprule
@@ -112,13 +119,14 @@ MT 6-mer             & 51.5\% & 0.983 & 0.177 & 0.576 & 9.2\% \\
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{tradeoff_abundance_detection.pdf}
-\caption{\textbf{Abundance versus detection trade-off} on the coverage-matched
-in-database genus pool (85{,}819 reads); marker area scales with ROC AUC. Neural
-models cluster at high abundance fidelity (Pearson $r$) but low detection
-sensitivity, whereas Kraken\,2 is the opposite---the strongest detector
-(sensitivity 93.5\% at 95\% specificity, ROC AUC 0.97) but the weakest at
-abundance ($r=0.82$). No single method wins both; the overlapping-13-mer model
-is the most balanced.}
+\caption{\textbf{Abundance versus detection on the in-database pool}
+(coverage-matched, 85{,}819 reads); marker area scales with ROC AUC. The neural
+models reach high abundance fidelity (Pearson $r$) but weak detection
+sensitivity. Raw Kraken\,2 is the opposite (strong detector, deflated abundance),
+but \emph{Bracken re-estimation moves the classical pipeline to the top-right}
+($r=0.997$, sensitivity 93.5\%)---best at both. On in-database data the neural
+models therefore hold no advantage here; their value lies off this plot, in
+read-level accuracy and out-of-database robustness (Section~\ref{sec:sample}).}
 \label{fig:kraken}
 \end{figure}
 

@@ -17,18 +17,19 @@ advantage can be claimed for real-world discovery settings.
 \paragraph{Simulated reads.}
 Reads were generated with ART \citep{Huang2012}. Simulation may favour
 alignment- and $k$-mer-based methods with structurally clean error models, and
-does not capture all real sequencing artefacts. Validation on real Illumina
-data with known composition---for example a defined mock community---would test
-robustness to real error profiles and to incomplete database coverage
-simultaneously, and is a priority for follow-up.
+does not capture all real sequencing artefacts. A preliminary probe on a real
+mock community (ZymoBIOMICS Gut Standard) is consistent with a substantial
+closed-set-to-real gap for the neural models, but that single sample---with few
+in-set genera and a large out-of-set fraction, and without a matched
+Kraken\,2$+$Bracken run on the same reads---is not yet a fair comparison; a
+complete real/mock evaluation with the same baselines is the priority follow-up.
 
 \paragraph{Baseline breadth.}
-We compared against Kraken\,2 as the dominant production baseline. A complete
-benchmark should add Bracken \citep{Lu2017} for Kraken\,2 abundance
-re-estimation, and Centrifuge \citep{Kim2016} or other classifiers, so that the
-neural models are measured against the strongest available pipelines rather than
-a single tool. We report Kraken\,2 without Bracken here and flag this as a
-known gap.
+We compare against Kraken\,2 both as raw report counts and with Bracken
+\citep{Lu2017} abundance re-estimation (Section~\ref{sec:sample}); Bracken is the
+appropriate abundance baseline and is strong ($r=0.997$). A fuller benchmark
+should also add Centrifuge \citep{Kim2016} or other classifiers so that the
+neural models are measured against the broadest set of production pipelines.
 
 \paragraph{Single read length and evaluation asymmetry.}
 All experiments use 150\,bp reads; generalization to other read lengths

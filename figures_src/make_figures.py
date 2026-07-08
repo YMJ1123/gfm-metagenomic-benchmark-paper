@@ -197,21 +197,30 @@ def fig_cross_setting():
 def fig_tradeoff():
     # (model, pearson_r, sens@95spec %, roc_auc, color)
     pts = [
-        ("MT 13-mer",        0.9993, 66.5, 0.905, TEAL),
-        ("NT-v2 6-mer",      0.9920, 17.5, 0.681, BLUE),
-        ("Kraken2 (k=35)",   0.8230, 93.5, 0.966, GREY),
-        ("MT 6-mer",         0.9830,  9.2, 0.576, ORANGE),
+        ("MT 13-mer",         0.9993, 66.5, 0.905, TEAL),
+        ("NT-v2 6-mer",       0.9920, 17.5, 0.681, BLUE),
+        ("Kraken2 (raw)",     0.8230, 93.5, 0.966, GREY),
+        ("Kraken2 + Bracken", 0.9970, 93.5, 0.966, GREEN),
+        ("MT 6-mer",          0.9830,  9.2, 0.576, ORANGE),
     ]
-    fig, ax = plt.subplots(figsize=(4.6, 3.6))
+    fig, ax = plt.subplots(figsize=(4.7, 3.7))
+    # Bracken correction arrow (raw Kraken2 -> +Bracken, along detection=93.5)
+    ax.annotate("", xy=(0.997, 93.5), xytext=(0.823, 93.5),
+                arrowprops=dict(arrowstyle="-|>", color=GREEN, lw=1.3,
+                                linestyle="--"), zorder=2)
+    ax.text(0.905, 95.5, "+ Bracken", color=GREEN, fontsize=7,
+            ha="center", va="bottom", style="italic")
     for name, r, sens, auc, col in pts:
         s = 90 + (auc-0.55)*520           # marker area ~ ROC AUC
-        ax.scatter(r, sens, s=s, color=col, edgecolor="white",
-                   linewidth=1.0, zorder=3)
+        mk = "*" if name == "Kraken2 + Bracken" else "o"
+        ax.scatter(r, sens, s=s*(2.1 if mk == "*" else 1), color=col,
+                   marker=mk, edgecolor="white", linewidth=1.0, zorder=4)
     # (dx_pts, dy_pts, ha, va) manual label offsets to avoid collisions
-    off = {"MT 13-mer":      (-14,  0, "right", "center"),
-           "Kraken2 (k=35)": (  0, 16, "center", "bottom"),
-           "NT-v2 6-mer":    ( 12,  8, "left", "bottom"),
-           "MT 6-mer":       ( 12, -8, "left", "top")}
+    off = {"MT 13-mer":         (-14,  0, "right", "center"),
+           "Kraken2 (raw)":     (  0,-15, "center", "top"),
+           "Kraken2 + Bracken": (  6, 14, "left", "bottom"),
+           "NT-v2 6-mer":       ( 12,  8, "left", "bottom"),
+           "MT 6-mer":          ( 12, -8, "left", "top")}
     for name, r, sens, auc, col in pts:
         dx, dy, ha, va = off[name]
         ax.annotate(f"{name} (AUC {auc:.2f})", (r, sens),
@@ -219,12 +228,12 @@ def fig_tradeoff():
                     ha=ha, va=va, fontsize=7, color=col)
     ax.set_xlabel("Abundance fidelity: Pearson $r$  $\\rightarrow$")
     ax.set_ylabel("Detection: sensitivity @ 95% spec. (%)  $\\rightarrow$")
-    ax.set_title("Abundance vs detection trade-off")
-    ax.set_xlim(0.78, 1.05); ax.set_ylim(-3, 112)
-    ax.text(1.045, 108, "better at both", fontsize=7, color="#777",
+    ax.set_title("Abundance vs detection (in-database pool)")
+    ax.set_xlim(0.78, 1.05); ax.set_ylim(-3, 116)
+    ax.text(1.045, 112, "best at both", fontsize=7, color="#777",
             ha="right", va="top", style="italic")
-    # marker-size legend (top-left corner, away from all points)
-    for auc_ref, yy in [(0.60, 40), (0.95, 30)]:
+    # marker-size legend (left side, away from all points)
+    for auc_ref, yy in [(0.60, 45), (0.95, 33)]:
         ax.scatter(0.80, yy, s=90+(auc_ref-0.55)*520, color=LGREY,
                    edgecolor="white", zorder=2)
         ax.text(0.822, yy, f"ROC AUC {auc_ref:.2f}", fontsize=6.5,
