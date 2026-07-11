@@ -17,12 +17,14 @@ advantage can be claimed for real-world discovery settings.
 \paragraph{Simulated reads.}
 Reads were generated with ART \citep{Huang2012}. Simulation may favour
 alignment- and $k$-mer-based methods with structurally clean error models, and
-does not capture all real sequencing artefacts. A preliminary probe on a real
-mock community (ZymoBIOMICS Gut Standard) is consistent with a substantial
-closed-set-to-real gap for the neural models, but that single sample---with few
-in-set genera and a large out-of-set fraction, and without a matched
-Kraken\,2$+$Bracken run on the same reads---is not yet a fair comparison; a
-complete real/mock evaluation with the same baselines is the priority follow-up.
+does not capture all real sequencing artefacts. Our preliminary probe on a real
+mock community (ZymoBIOMICS D6331, Section~\ref{sec:mock}), now with a matched
+Kraken\,2$+$Bracken baseline, shows all methods dropping to $r\approx0.42$--$0.58$
+with no clear winner and Kraken\,2 abstaining on 56\% of reads---a substantial
+closed-set-to-real gap. That single small community (11 in-set genera, 135\,bp
+reads) is not a definitive benchmark; a fuller evaluation across multiple
+communities, matched read lengths, and additional baselines (e.g.\ Centrifuge)
+is the priority follow-up.
 
 \paragraph{Baseline breadth.}
 We compare against Kraken\,2 both as raw report counts and with Bracken

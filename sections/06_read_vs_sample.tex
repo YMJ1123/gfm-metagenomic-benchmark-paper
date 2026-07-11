@@ -158,3 +158,60 @@ taxa: a genuinely absent genus still receives a small number of spurious reads
 detection is unreliable. This noise floor has a clean interpretation and
 motivates the calibrated-threshold recommendation in
 Section~\ref{sec:recommendations}.
+
+\subsection{A real mock community: the in-database dominance does not transfer}
+\label{sec:mock}
+
+All comparisons so far use simulated reads. As a first check on real data, we ran
+the trained genus classifiers and the Kraken\,2$+$Bracken pipeline (inference
+only) on real Illumina reads from the ZymoBIOMICS Gut Microbiome Standard
+(D6331; run SRR33710519, $\sim$3M reads, median 135\,bp), whose theoretical
+genomic-DNA composition is the sample-level ground truth. Of the 21 mock taxa,
+11 genera (81.5\% of the community) fall within our 120 training genera; the
+remainder are out-of-set (dominated by \emph{Escherichia} at 14\%, absent from
+the 120 genera), an unavoidable ceiling for every method.
+
+Two things change relative to the simulated in-database pool
+(Table~\ref{tab:mock}). First, \emph{every} method's genus-abundance correlation
+collapses from $r\approx0.99$--$0.997$ to $r=0.42$--$0.58$: the closed-set
+numbers do not transfer to real reads---precisely the gap our simulation cannot
+expose. Second, and more informative, the classical pipeline's simulated
+dominance evaporates. Kraken\,2 classifies only 43.9\% of the real reads
+(56.1\% unclassified, versus $\sim$30\% on simulation) because of real error,
+out-of-set organisms, and database gaps; so even after Bracken re-estimation its
+detection sensitivity falls to 54.5\%---\emph{below} the neural models'
+72.7\%---and its Bray--Curtis error (0.437, inflated by over-estimating
+\emph{Veillonella}) is the worst of the three. There is no single winner:
+Kraken\,2$+$Bracken has the highest correlation ($r=0.58$) but the worst
+composition error and lowest sensitivity, while the always-labelling neural
+models are competitive (MT 13-mer $r=0.55$, best Bray--Curtis $0.344$; NT-v2
+$r=0.42$) with higher detection sensitivity.
+
+\begin{table}[t]
+\centering
+\caption{\textbf{Real mock community} (ZymoBIOMICS D6331, 11 in-set genera;
+18.5\% of the community is out-of-set). On real reads all methods drop far below
+their simulated in-database figures ($r\approx0.99$--$0.997$) and no method wins
+on all axes; Kraken\,2's abstention balloons to 56\%, so its simulated dominance
+does not transfer.}
+\label{tab:mock}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lcccc@{}}
+\toprule
+Method & Pearson $r$ & Bray--Curtis & Sens.\ @1\% & Reads clf.\ \\
+\midrule
+Kraken\,2$+$Bracken & \textbf{0.580} & 0.437 & 54.5\% & 43.9\% \\
+MT 13-mer           & 0.545 & \textbf{0.344} & \textbf{72.7\%} & 100\% \\
+NT-v2 6-mer         & 0.420 & 0.376 & \textbf{72.7\%} & 100\% \\
+\botrule
+\end{tabular*}
+\end{table}
+
+This single small mock (11 in-set genera, one community, 135\,bp reads) is a
+preliminary probe rather than a definitive benchmark, and the MT-versus-NT
+ordering is within its noise. But it makes one point cleanly: the classical
+pipeline's crushing in-database advantage (Section~\ref{sec:sample}) is a
+property of simulated, fully-covered data, not of real communities---on real
+reads the neural models are competitive, and the binding open problem for
+\emph{all} methods is the large gap between closed-set and real-world accuracy.
+A fuller evaluation across multiple communities, matched read lengths, and
+additional baselines is the priority follow-up (Section~\ref{sec:limitations}).

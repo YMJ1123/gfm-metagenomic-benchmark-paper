@@ -95,7 +95,9 @@ recovers it ($r=0.997$), so on in-database data a properly configured
 Kraken\,2$+$Bracken pipeline matches the neural models on abundance and remains
 the stronger detector---the distinct value of GFMs is read-level accuracy under a
 good tokenizer and behaviour outside the reference database, not sample-level
-abundance.
+abundance. On a real mock community, however, all methods (neural and
+Kraken\,2$+$Bracken) fall to $r\approx0.4$--$0.6$ with no clear winner, exposing
+a large closed-set-to-real gap that is the binding open problem.
 \textbf{Conclusion:} Tokenization design is the critical, and currently
 under-appreciated, factor for GFM-based metagenomic classification. We translate
 these findings into use-case-specific recommendations and argue that future
