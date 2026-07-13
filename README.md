@@ -85,9 +85,9 @@ latexmk -pdf cover_letter.tex
 
 - **P0 out-of-genome generalization 實驗**：closed-set 98.7% 被質疑是 k-mer lookup
   的最大風險。§8 已主動揭露並說明需補；先做完最穩。
-- **更完整的真實群落驗證**：ZymoBIOMICS D6331 mock + Kraken2/Bracken 已在 §6；
+- **更完整的真實群落驗證**：D6331 兩 replicates + Kraken2/Bracken + Spearman /
+  filtered $r$ / 修正 detection / per-genus 已入主文與 Supplementary；
   仍缺多個 community、matched read length、Centrifuge 等（§8 follow-up）。
-  ~~舊註：「Bracken / Zymo 尚未做」已過時，勿再當成 gap。~~
 
 ## 圖（統一字體 + 數據核對）
 
