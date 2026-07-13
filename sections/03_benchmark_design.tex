@@ -63,6 +63,7 @@ Supplementary Material.
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
     font=\footnotesize,
+    node distance=3.5mm and 12mm,
     box/.style={draw=bibblue,rounded corners=2pt,align=center,
                 inner sep=5pt,fill=bibblue!5,
                 text width=38mm,minimum height=12mm},
@@ -74,28 +75,24 @@ Supplementary Material.
                text width=40mm,minimum height=12mm},
     ar/.style={-{Latex[length=2.2mm]},bibblue!80,thick}
   ]
-  % middle + right as a 3x2 matrix so rows share centres
-  \matrix[
-      column sep=12mm,
-      row sep=3.5mm,
-      nodes={anchor=center}
-    ] (M) {
-    \node[axis] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M}; &
-    \node[ev]   (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)}; \\
-    \node[axis] (a2) {\textbf{Pre-training}\\pretrained vs scratch}; &
-    \node[ev]   (e1) {\textbf{Read-level}\\Top-1 accuracy}; \\
-    \node[axis] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap}; &
-    \node[ev]   (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.}; \\
-  };
+  % middle column first (anchor for left/right)
+  \node[axis] (a2) {\textbf{Pre-training}\\pretrained vs scratch};
+  \node[axis,above=of a2] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M};
+  \node[axis,below=of a2] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap};
 
-  % left column, vertically centred on the middle row
+  % evaluation column: same row as each axis
+  \node[ev,right=of a1] (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)};
+  \node[ev,right=of a2] (e1) {\textbf{Read-level}\\Top-1 accuracy};
+  \node[ev,right=of a3] (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.};
+
+  % data column, centred on middle row
   \node[box,left=16mm of a2] (reads)
     {ART 150\,bp reads\\(leakage-controlled\\train/test split)};
   \node[box,left=10mm of reads] (genomes)
     {Gut genome catalogue\\120 genera / 1{,}535 species};
   \draw[ar] (genomes) -- (reads);
 
-  % fork: stem from reads → vertical spine → three axes
+  % fork: stem → vertical spine → three axes (no \matrix; CI-safe)
   \coordinate (fork) at ($(reads.east)!0.55!(a2.west)$);
   \draw[bibblue!80,thick] (reads.east) -- (fork);
   \draw[bibblue!80,thick] (fork |- a1.west) -- (fork |- a3.west);
@@ -103,12 +100,10 @@ Supplementary Material.
   \draw[ar] (fork) -- (a2.west);
   \draw[ar] (fork |- a3.west) -- (a3.west);
 
-  % axis → evaluation (same row centres)
   \draw[ar] (a1) -- (e0);
   \draw[ar] (a2) -- (e1);
   \draw[ar] (a3) -- (e2);
 
-  % Kraken under Detection, clear spacing
   \node[box,below=7mm of e2] (kraken)
     {Kraken\,2 baseline\\(coverage-matched pool)};
   \draw[ar] (e2) -- (kraken);
