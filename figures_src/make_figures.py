@@ -128,9 +128,9 @@ def fig_kmer_baselines():
 # Fig. rc_tta_benefit : reverse-complement TTA gain (pp) per setting
 # ----------------------------------------------------------------------
 def fig_rc_tta():
-    exps = ["v3 (500K)", "v4 (500K)", "v5b (500K, LA)", "v7 (500K, RC-cons.)",
-            "v8 (5M)", "v9 (50M, NT-v2)", "DNABERT (5M)", "DNABERT-2 (5M)",
-            "v11 (50M, shallow)"]
+    exps = ["NT-v2 500K", "NT-v2 500K (repeat)", "NT-v2 500K, logit-adj.",
+            "NT-v2 500K, RC-consist.", "NT-v2 5M", "NT-v2 50M",
+            "DNABERT 5M", "DNABERT-2 5M", "1-layer random 50M"]
     fwd    = np.array([53.92, 53.75, 52.29, 54.10, 62.02, 66.29, 61.20, 57.35, 53.80])
     rc_tta = np.array([55.36, 55.29, 53.58, 55.18, 63.05, 67.07, 61.78, 58.88, 53.88])
     gain = rc_tta - fwd
@@ -266,6 +266,38 @@ def fig_train_fit():
     save(fig, "train_fit.pdf")
 
 
+# ----------------------------------------------------------------------
+# Fig. compute_speed : end-to-end throughput + peak GPU memory (100K reads)
+#   numbers from benchmark_results/benchmark_summary.csv (single H200)
+# ----------------------------------------------------------------------
+def fig_compute():
+    # (label, reads/s, peak GPU MiB, colour)
+    rows = [
+        ("NT-v2 6-mer",            1221,  6731, BLUE),
+        ("MT 13-mer (overlap)",    1066,  9355, TEAL),
+        ("MT 13-mer (non-overlap)",1478,  8959, TEAL),
+        ("MT 6-mer (overlap)",     2451,  1373, ORANGE),
+        ("MT 6-mer (non-overlap)", 3030,   857, ORANGE),
+    ]
+    labels = [r[0] for r in rows]
+    rps = [r[1] for r in rows]; mem = [r[2] for r in rows]; cols = [r[3] for r in rows]
+    y = np.arange(len(rows))[::-1]     # first row on top
+    fig, (a, b) = plt.subplots(1, 2, figsize=(7.2, 2.8), sharey=True)
+    a.barh(y, rps, color=cols, zorder=3)
+    for yi, v in zip(y, rps):
+        a.text(v+40, yi, f"{v:,}", va="center", fontsize=7)
+    a.set_yticks(y); a.set_yticklabels(labels, fontsize=7.5)
+    a.set_xlim(0, 3500); a.set_xlabel("Throughput (reads/s, higher better)")
+    a.set_title("End-to-end speed"); a.grid(axis="y", visible=False)
+    b.barh(y, mem, color=cols, zorder=3)
+    for yi, v in zip(y, mem):
+        b.text(v+120, yi, f"{v:,}", va="center", fontsize=7)
+    b.set_xlim(0, 11000); b.set_xlabel("Peak GPU memory (MiB, lower better)")
+    b.set_title("Inference memory"); b.grid(axis="y", visible=False)
+    fig.suptitle("Compute cost on 100K reads (single H200)", fontsize=9.5, y=1.02)
+    save(fig, "compute_speed.pdf")
+
+
 if __name__ == "__main__":
     fig_data_scaling()
     fig_backbone_ablation()
@@ -274,4 +306,5 @@ if __name__ == "__main__":
     fig_rc_tta()
     fig_cross_setting()
     fig_tradeoff()
+    fig_compute()
     print("done")
