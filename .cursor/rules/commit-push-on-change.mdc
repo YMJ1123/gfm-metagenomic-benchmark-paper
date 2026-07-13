@@ -5,6 +5,9 @@ alwaysApply: true
 
 # Commit and push on every paper change
 
-After any coherent set of edits to this repository (sections, main.tex, cover letter, supplementary, README, figures), **commit and push** to `origin` without waiting for a separate request.
+After any coherent set of edits to this repository (sections, main.tex, cover letter, supplementary, README, figures), **commit and push to `origin`** without waiting for a separate request.
 
-Use HEREDOC commit messages; do not force-push; do not amend unless the usual amend conditions are met.
+**`origin` is the personal fork:** `YMJ1123/gfm-metagenomic-benchmark-paper`  
+(not `m2lab-ntu/...` — that remote is `upstream` only).
+
+Use HEREDOC / `-F` commit messages; do not force-push; do not amend unless the usual amend conditions are met.
