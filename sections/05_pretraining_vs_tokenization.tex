@@ -63,7 +63,7 @@ Tokenizer & Overlap & Model & 50M & 250M \\
 
 Critically, tokenization also governs \emph{scalability}. As data grows from
 50M to 250M, the overlapping-13-mer model improves by $+11$ pp
-($87.5\%\!\rightarrow\!98.7\%$) while the 6-mer NT-v2 is flat ($+0.22$ pp;
+($87.4\%\!\rightarrow\!98.7\%$) while the 6-mer NT-v2 is flat ($+0.22$ pp;
 Section~\ref{sec:scaling}). A tokenizer that preserves enough local signal both
 raises the ceiling and keeps the model in the regime where more data helps.
 
@@ -114,7 +114,7 @@ Kraken-style unique-key lookup achieves only 0.72\% (because $k=13$ is
 map to a single genus). A dominant-genus majority vote reaches 35.3\%, and a
 full multinomial $k$-mer naive Bayes---using $P(k\text{-mer}\mid\text{genus})$
 without any neural network---reaches 74.9\%. The MT 13-mer network adds a
-further $+13$ pp over naive Bayes (87.5\%), capturing co-occurrence structure
+further $+13$ pp over naive Bayes (87.4\%), capturing co-occurrence structure
 beyond the naive-Bayes independence assumption. The mechanism is therefore
 learned high-dimensional composition, \emph{not} exact-match lookup
 (Figure~\ref{fig:kmer}).
@@ -141,7 +141,7 @@ composition (NT-v2's tokenization) yields only 25.9\%: moving from 6-mer to
 13-mer alone nearly triples accuracy ($25.9\%\!\rightarrow\!74.9\%$) with no
 change to the model. Conversely, the neural network contributes \emph{more} when
 the tokenizer is weaker---it adds $+41$ pp on 6-mer (25.9\% naive Bayes to 67.0\%
-for the 498M-parameter NT-v2) but only $+13$ pp on 13-mer (74.9\% to 87.5\%)---so
+for the 498M-parameter NT-v2) but only $+13$ pp on 13-mer (74.9\% to 87.4\%)---so
 a poorer input representation forces the model to work harder to recover the same
 signal. Most strikingly, the non-neural 13-mer naive Bayes (74.9\%) still
 \emph{beats} the pre-trained 498M-parameter NT-v2 on 6-mer (67\%): no amount of

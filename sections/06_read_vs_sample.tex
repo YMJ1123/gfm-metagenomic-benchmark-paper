@@ -30,8 +30,10 @@ and (iii) real or mock communities with authentic error profiles and incomplete
 database coverage. The present results establish (i)---a stability test under a
 fixed expected composition---and should not be read as evidence for (iii): they
 show that per-read errors cancel when the community is held fixed, not that a
-6-mer model can profile an arbitrary real sample. Real and mock-community
-validation (Section~\ref{sec:limitations}) remains required before deployment.
+6-mer model can profile an arbitrary real sample. We therefore probe (iii) later
+in this section on a real mock community (Section~\ref{sec:mock}); that probe is
+preliminary, and a fuller multi-community evaluation remains required before
+deployment (Section~\ref{sec:limitations}).
 
 \begin{table}[t]
 \centering
@@ -45,7 +47,7 @@ fidelity, but even a 67\%-accurate model attains $r=0.99$. Genus-balancing
 Model & Read acc.\ & Pearson $r$ & Bray--Curtis \\
 \midrule
 MT 13-mer (250M)         & 98.7\% & 1.000 & 0.005 \\
-MT 13-mer (50M)          & 87.5\% & 0.999 & 0.032 \\
+MT 13-mer (50M)          & 87.4\% & 0.999 & 0.032 \\
 NT-v2 6-mer (50M)        & 67.1\% & 0.993 & 0.098 \\
 NT-v2 6-mer (250M warm)  & 67.3\% & 0.993 & 0.098 \\
 MT 6-mer (scratch)       & 48.9\% & 0.989 & 0.171 \\

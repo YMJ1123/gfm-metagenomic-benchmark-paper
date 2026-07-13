@@ -85,7 +85,7 @@ determines the performance ceiling: an overlapping-13-mer model trained from
 scratch reaches 87.4\% genus Top-1 accuracy versus 67.1\% for a pre-trained
 6-mer model on identical 50M-read data. The 6-mer model saturates beyond 50M
 reads ($+0.22$ percentage points to 250M) while the 13-mer model keeps scaling
-(87.5\% to 98.7\%); the 6-mer model fails even to \emph{fit} its training set
+(87.4\% to 98.7\%); the 6-mer model fails even to \emph{fit} its training set
 beyond $\sim$66\%, indicating a representational rather than an optimization
 ceiling. With tokenization fixed at 6-mer, pre-training contributes $+13.2$
 percentage points. At the sample level, under controlled synthetic compositions
@@ -112,7 +112,7 @@ tokenization, benchmarking, short-read sequencing}
 \item Data scaling is tokenizer-dependent: increasing training data from 50M to
 250M reads yields almost no gain for a non-overlapping 6-mer model
 ($+0.22$ percentage points) but an 11-point gain for an overlapping 13-mer model
-($87.5\%\!\rightarrow\!98.7\%$).
+($87.4\%\!\rightarrow\!98.7\%$).
 \item Tokenization, not backbone pre-training, sets the performance ceiling: an
 overlapping 13-mer model trained from scratch reaches 87.4\% genus Top-1 versus
 67.1\% for a 498M-parameter pre-trained model under identical data.
@@ -120,8 +120,9 @@ overlapping 13-mer model trained from scratch reaches 87.4\% genus Top-1 versus
 percentage points over a randomly initialized backbone with the same 6-mer
 input), so the two factors are separable and both matter.
 \item Read-level accuracy and sample-level utility diverge: a 67\%-accurate read
-classifier reaches Pearson $r=0.99$ for genus abundance, but low read accuracy
-still cripples low-abundance detection.
+classifier reaches Pearson $r=0.99$ for genus abundance on simulated
+in-database samples, but that ranking does not transfer to a real mock
+community ($r\approx0.4$--$0.6$ for all methods, including Kraken\,2$+$Bracken).
 \item We give practical, use-case-specific recommendations and argue that future
 microbial foundation models should be pre-trained with overlapping long-$k$
 tokenization.

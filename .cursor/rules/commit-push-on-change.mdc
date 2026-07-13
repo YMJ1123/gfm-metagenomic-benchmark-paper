@@ -1,0 +1,10 @@
+---
+description: Always commit and push after manuscript edits
+alwaysApply: true
+---
+
+# Commit and push on every paper change
+
+After any coherent set of edits to this repository (sections, main.tex, cover letter, supplementary, README, figures), **commit and push** to `origin` without waiting for a separate request.
+
+Use HEREDOC commit messages; do not force-push; do not amend unless the usual amend conditions are met.

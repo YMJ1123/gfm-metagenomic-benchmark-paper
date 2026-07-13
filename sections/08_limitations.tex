@@ -18,7 +18,7 @@ advantage can be claimed for real-world discovery settings.
 Reads were generated with ART \citep{Huang2012}. Simulation may favour
 alignment- and $k$-mer-based methods with structurally clean error models, and
 does not capture all real sequencing artefacts. Our preliminary probe on a real
-mock community (ZymoBIOMICS D6331, Section~\ref{sec:mock}), now with a matched
+mock community (ZymoBIOMICS D6331, Section~\ref{sec:mock}), with a matched
 Kraken\,2$+$Bracken baseline, shows all methods dropping to $r\approx0.42$--$0.58$
 with no clear winner and Kraken\,2 abstaining on 56\% of reads---a substantial
 closed-set-to-real gap. That single small community (11 in-set genera, 135\,bp
@@ -29,12 +29,14 @@ is the priority follow-up.
 \paragraph{Baseline breadth.}
 We compare against Kraken\,2 both as raw report counts and with Bracken
 \citep{Lu2017} abundance re-estimation (Section~\ref{sec:sample}); Bracken is the
-appropriate abundance baseline and is strong ($r=0.997$). A fuller benchmark
-should also add Centrifuge \citep{Kim2016} or other classifiers so that the
-neural models are measured against the broadest set of production pipelines.
+appropriate abundance baseline and is strong ($r=0.997$ on the simulated
+in-database pool). A fuller benchmark should also add Centrifuge
+\citep{Kim2016} or other classifiers so that the neural models are measured
+against the broadest set of production pipelines.
 
 \paragraph{Single read length and evaluation asymmetry.}
-All experiments use 150\,bp reads; generalization to other read lengths
+Simulated experiments use 150\,bp reads; the real mock probe uses median
+135\,bp reads from the same Illumina run. Generalization to other read lengths
 (75/250\,bp) is untested. We also note a metric asymmetry in the current
 results---NT-v2 numbers use reverse-complement test-time augmentation while
 MetaTransformer numbers are forward-only---which slightly understates the

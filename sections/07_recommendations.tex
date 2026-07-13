@@ -43,13 +43,20 @@ Read-level genus classification &
 Prefer an overlapping long-$k$ model (87\% vs 67\%); a 6-mer GFM is a distant
 second. \\[2pt]
 Sample-level abundance (composition) &
-For in-database samples, Kraken\,2$+$Bracken is excellent ($r=0.997$) and has no
-neural competitor; a 67\%-accurate neural model is comparable ($r=0.99$) and
-useful when the reference is incomplete, but do not expect it to beat a
-Bracken-corrected pipeline. Compare against raw counts \emph{and} Bracken. \\[2pt]
+For simulated in-database samples, Kraken\,2$+$Bracken is excellent ($r=0.997$)
+and matches the best neural models ($r\!\approx\!0.99$); do not expect a neural
+model to beat a Bracken-corrected pipeline on clean closed-set data. Compare
+against raw counts \emph{and} Bracken. On a real mock community
+(Section~\ref{sec:mock}), however, that ranking does not transfer: all methods
+fall to $r\approx0.4$--$0.6$ with no clear winner, and always-labelling neural
+models (including a 6-mer GFM) are competitive on Bray--Curtis and detection.
+Treat simulated abundance rankings as provisional until real-community checks.
+\\[2pt]
 Presence/absence detection, esp.\ low-abundance taxa &
-Use Kraken\,2 (or another exact-$k$-mer tool); current 6-mer neural detectors
-are weak. Apply a calibrated abundance threshold above the $\sim$0.3\% noise
+On simulated in-database data, prefer Kraken\,2 (or another exact-$k$-mer tool);
+current 6-mer neural detectors are weak there. On real mocks the picture is
+mixed (neural models can show higher sensitivity when Kraken\,2 abstains
+heavily). Apply a calibrated abundance threshold above the $\sim$0.3\% noise
 floor. \\[2pt]
 Species-level classification &
 6-mer GFMs are insufficient; use a long-$k$ tokenizer or a hierarchical router,
@@ -66,15 +73,19 @@ signal survives. Ask what $k$ and what stride the model uses. \\
 
 \begin{boxtext}[Decision guide]
 \begin{itemize}\setlength{\itemsep}{1pt}
-\item \textbf{Low-abundance presence/absence?} Use an exact-$k$-mer pipeline
-(Kraken\,2/Bracken, Centrifuge); current 6-mer neural detectors are weak.
+\item \textbf{Low-abundance presence/absence?} Prefer an exact-$k$-mer pipeline
+(Kraken\,2/Bracken, Centrifuge) on well-covered references; current 6-mer neural
+detectors are weak there. On real communities with heavy abstention, re-check
+against a neural baseline.
 \item \textbf{Known-genome, closed-set read classification?} Use an overlapping
 long-$k$ neural model (87\% vs 67\% at genus).
 \item \textbf{Only a 6-mer GFM available?} Do not expect data scaling to lift the
 ceiling; the tokenizer, not the data, is the limit.
-\item \textbf{Community abundance (in-database)?} Use Kraken\,2$+$Bracken
-($r=0.997$); a neural model is comparable but not better. Reach for the neural
-model mainly when the reference is incomplete.
+\item \textbf{Community abundance (in-database, simulated)?} Use
+Kraken\,2$+$Bracken ($r=0.997$); a neural model is comparable but not better.
+\item \textbf{Community abundance (real / incomplete reference)?} Do not trust
+the simulated ranking: on a real mock, neural and Kraken\,2$+$Bracken are
+competitive with no clear winner (Section~\ref{sec:mock}).
 \item \textbf{Novel-genome discovery?} The current closed-set evidence is
 insufficient; out-of-genome validation is required first.
 \end{itemize}
