@@ -62,53 +62,6 @@ Supplementary Material.
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
-<<<<<<< HEAD
-    font=\footnotesize,
-    node distance=3.5mm and 12mm,
-    box/.style={draw=bibblue,rounded corners=2pt,align=center,
-                inner sep=5pt,fill=bibblue!5,
-                text width=38mm,minimum height=12mm},
-    axis/.style={draw=bibblue!70,rounded corners=2pt,align=center,
-                 inner sep=5pt,fill=white,
-                 text width=36mm,minimum height=12mm},
-    ev/.style={draw=bibblue,rounded corners=2pt,align=center,
-               inner sep=5pt,fill=bibblue!12,
-               text width=40mm,minimum height=12mm},
-    ar/.style={-{Latex[length=2.2mm]},bibblue!80,thick}
-  ]
-  % middle column first (anchor for left/right)
-  \node[axis] (a2) {\textbf{Pre-training}\\pretrained vs scratch};
-  \node[axis,above=of a2] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M};
-  \node[axis,below=of a2] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap};
-
-  % evaluation column: same row as each axis
-  \node[ev,right=of a1] (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)};
-  \node[ev,right=of a2] (e1) {\textbf{Read-level}\\Top-1 accuracy};
-  \node[ev,right=of a3] (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.};
-
-  % data column, centred on middle row
-  \node[box,left=16mm of a2] (reads)
-    {ART 150\,bp reads\\(leakage-controlled\\train/test split)};
-  \node[box,left=10mm of reads] (genomes)
-    {Gut genome catalogue\\120 genera / 1{,}535 species};
-  \draw[ar] (genomes) -- (reads);
-
-  % fork: stem → vertical spine → three axes (no \matrix; CI-safe)
-  \coordinate (fork) at ($(reads.east)!0.55!(a2.west)$);
-  \draw[bibblue!80,thick] (reads.east) -- (fork);
-  \draw[bibblue!80,thick] (fork |- a1.west) -- (fork |- a3.west);
-  \draw[ar] (fork |- a1.west) -- (a1.west);
-  \draw[ar] (fork) -- (a2.west);
-  \draw[ar] (fork |- a3.west) -- (a3.west);
-
-  \draw[ar] (a1) -- (e0);
-  \draw[ar] (a2) -- (e1);
-  \draw[ar] (a3) -- (e2);
-
-  \node[box,below=7mm of e2] (kraken)
-    {Kraken\,2 baseline\\(coverage-matched pool)};
-  \draw[ar] (e2) -- (kraken);
-=======
   font=\footnotesize,
   box/.style={draw=bibblue,rounded corners=2pt,align=center,inner sep=4pt,fill=bibblue!5},
   sub/.style={draw=bibblue!60,rounded corners=2pt,align=center,inner sep=3pt,fill=white,text width=34mm},
@@ -135,7 +88,6 @@ Supplementary Material.
   \draw[ar] (reads.east) -- (abl.west);
   \draw[ar] (abl.east) -- (eval.west);
   \draw[ar] (eval.south) -- (kr.north);
->>>>>>> origin/main
 \end{tikzpicture}%
 }
 \caption{\textbf{Benchmark design.} Reads are simulated from a leakage-controlled
