@@ -200,6 +200,17 @@ Neural network & --- & 67.0\textsuperscript{a} & 87.4\textsuperscript{b} \\
 \end{table}
 
 \section{Computational cost}
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{compute_speed.pdf}
+\caption{End-to-end throughput and peak inference GPU memory on 100K reads
+(single H200). Despite its ``$\sim$5M-parameter'' encoder, the overlapping
+13-mer MetaTransformer is both slower and more memory-hungry than the
+498M-parameter NT-v2, because its 13-mer vocabulary implies a multi-billion-entry
+embedding table; the 6-mer models are fastest and lightest.}
+\label{fig:compute}
+\end{figure}
+
 \begin{table}[h]
 \centering
 \caption{End-to-end inference throughput on 100K reads (batch 1024, single

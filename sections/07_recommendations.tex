@@ -8,22 +8,35 @@ distils the benchmark itself into a reusable protocol; Box~2 is a decision guide
 for choosing a method.
 
 \begin{boxtext}[A protocol for evaluating GFMs in short-read taxonomy]
-\begin{enumerate}[1.]\setlength{\itemsep}{1pt}
-\item Fix the taxonomy level (genus/species) and read length up front.
-\item Build both read-disjoint \emph{and} genome-disjoint splits; report
-closed-set and out-of-reference results separately.
-\item Report nominal read counts \emph{and} unique-read counts (short-read
-simulation duplicates reads; scaling claims must not be duplicate scaling).
-\item Vary one axis at a time---pre-training, tokenizer, data scale---holding the
-architecture and evaluation fixed.
-\item Evaluate read-level accuracy, sample-level abundance, and presence/absence
-detection \emph{separately}; they do not track each other.
-\item Compare against both a raw exact-$k$-mer classifier (e.g.\ Kraken\,2) and an
-abundance-corrected pipeline (e.g.\ Kraken\,2$+$Bracken).
-\item State the strand-symmetry protocol (e.g.\ reverse-complement TTA) and apply
-it consistently across models.
-\item Release configs, exact commands, per-read predictions, and sample
-composition files.
+The pitfalls below each cost us, or a published comparison, a wrong conclusion;
+we distil them into eight steps.
+\begin{enumerate}[1.]\setlength{\itemsep}{2pt}
+\item \textbf{Fix the target first.} State the taxonomy level (genus/species) and
+read length up front---both the achievable accuracy and the best-performing method
+change with them (e.g.\ Kraken\,2 wins at species but not genus abundance here).
+\item \textbf{Split by read \emph{and} by genome.} Build read-disjoint splits to
+avoid trivial leakage, but also genome-disjoint (out-of-reference) splits, and
+report the two separately---closed-set accuracy (e.g.\ our 98.7\%) does not imply
+novel-genome generalization.
+\item \textbf{Count unique reads, not just reads.} Short-read simulation
+duplicates reads (here 258M $\to$ 43M unique); report both so a ``data-scaling''
+curve is not mistaken for what is really duplicate scaling.
+\item \textbf{Change one axis at a time.} Vary pre-training, tokenizer, or data
+scale with architecture and evaluation held fixed; otherwise a reported gain
+cannot be attributed to any single factor.
+\item \textbf{Evaluate at three levels separately.} Report read-level accuracy,
+sample-level abundance, and presence/absence detection independently---they
+diverge (a 67\%-accurate model gives $r=0.99$ abundance yet weak detection).
+\item \textbf{Use the right classical baseline.} Compare against \emph{both} raw
+exact-$k$-mer counts (e.g.\ Kraken\,2) and an abundance-corrected pipeline (e.g.\
+Kraken\,2$+$Bracken); raw counts understate the classical tool and invert the
+abundance ranking.
+\item \textbf{Match the strand-symmetry protocol.} State whether reverse-complement
+test-time augmentation is used and apply it consistently, so models are not
+compared under different inference protocols.
+\item \textbf{Validate on real data and release everything.} Check at least one
+real/mock community (not only simulation), and release configs, exact commands,
+per-read predictions, and sample composition files for reproduction.
 \end{enumerate}
 \end{boxtext}
 
