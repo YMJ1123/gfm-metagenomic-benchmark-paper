@@ -63,37 +63,55 @@ Supplementary Material.
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
     font=\footnotesize,
-    node distance=6mm,
     box/.style={draw=bibblue,rounded corners=2pt,align=center,
-                inner sep=4pt,fill=bibblue!5},
+                inner sep=5pt,fill=bibblue!5,
+                text width=38mm,minimum height=12mm},
     axis/.style={draw=bibblue!70,rounded corners=2pt,align=center,
-                 inner sep=4pt,fill=white},
+                 inner sep=5pt,fill=white,
+                 text width=36mm,minimum height=12mm},
     ev/.style={draw=bibblue,rounded corners=2pt,align=center,
-               inner sep=4pt,fill=bibblue!12},
-    ar/.style={-{Latex[length=2mm]},bibblue!80,thick}
+               inner sep=5pt,fill=bibblue!12,
+               text width=40mm,minimum height=12mm},
+    ar/.style={-{Latex[length=2.2mm]},bibblue!80,thick}
   ]
-  \node[box] (genomes) {Gut genome catalogue\\120 genera / 1{,}535 species};
-  \node[box,right=of genomes] (reads) {ART 150\,bp reads\\(leakage-controlled\\train/test split)};
+  % middle + right as a 3x2 matrix so rows share centres
+  \matrix[
+      column sep=12mm,
+      row sep=3.5mm,
+      nodes={anchor=center}
+    ] (M) {
+    \node[axis] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M}; &
+    \node[ev]   (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)}; \\
+    \node[axis] (a2) {\textbf{Pre-training}\\pretrained vs scratch}; &
+    \node[ev]   (e1) {\textbf{Read-level}\\Top-1 accuracy}; \\
+    \node[axis] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap}; &
+    \node[ev]   (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.}; \\
+  };
+
+  % left column, vertically centred on the middle row
+  \node[box,left=16mm of a2] (reads)
+    {ART 150\,bp reads\\(leakage-controlled\\train/test split)};
+  \node[box,left=10mm of reads] (genomes)
+    {Gut genome catalogue\\120 genera / 1{,}535 species};
   \draw[ar] (genomes) -- (reads);
 
-  % ablation axes
-  \node[axis,above right=2mm and 10mm of reads] (a1) {\textbf{Data scale}\\500K\,$\to$\,250M};
-  \node[axis,below=1.5mm of a1] (a2) {\textbf{Pre-training}\\pretrained vs scratch};
-  \node[axis,below=1.5mm of a2] (a3) {\textbf{Tokenization}\\6/12/13-mer, overlap};
-  \draw[ar] (reads.east) -- (a1.west);
-  \draw[ar] (reads.east) -- (a2.west);
-  \draw[ar] (reads.east) -- (a3.west);
+  % fork: stem from reads → vertical spine → three axes
+  \coordinate (fork) at ($(reads.east)!0.55!(a2.west)$);
+  \draw[bibblue!80,thick] (reads.east) -- (fork);
+  \draw[bibblue!80,thick] (fork |- a1.west) -- (fork |- a3.west);
+  \draw[ar] (fork |- a1.west) -- (a1.west);
+  \draw[ar] (fork) -- (a2.west);
+  \draw[ar] (fork |- a3.west) -- (a3.west);
 
-  % evaluation
-  \node[ev,right=14mm of a2] (e1) {\textbf{Read-level}\\Top-1 accuracy};
-  \node[ev,above=1.5mm of e1] (e0) {\textbf{Sample-level}\\abundance ($r$, Bray--Curtis)};
-  \node[ev,below=1.5mm of e1] (e2) {\textbf{Detection}\\ROC, sens.\ @ 95\% spec.};
-  \draw[ar] (a1.east) -- (e0.west);
-  \draw[ar] (a2.east) -- (e1.west);
-  \draw[ar] (a3.east) -- (e2.west);
+  % axis → evaluation (same row centres)
+  \draw[ar] (a1) -- (e0);
+  \draw[ar] (a2) -- (e1);
+  \draw[ar] (a3) -- (e2);
 
-  \node[box,below=6mm of e1] (kraken) {Kraken\,2 baseline\\(coverage-matched pool)};
-  \draw[ar] (e2.south) -- (kraken.north);
+  % Kraken under Detection, clear spacing
+  \node[box,below=7mm of e2] (kraken)
+    {Kraken\,2 baseline\\(coverage-matched pool)};
+  \draw[ar] (e2) -- (kraken);
 \end{tikzpicture}%
 }
 \caption{\textbf{Benchmark design.} Reads are simulated from a leakage-controlled
