@@ -222,4 +222,77 @@ training on 64 GPUs (8 nodes $\times$ 8 H200) with DDP: 476 min/epoch on a cold
 NFS cache versus 43 min/epoch warm (an 11$\times$ I/O effect worth noting for
 reproduction at scale).
 
+\section{Real mock community (D6331) details}
+\label{sec:supp-mock}
+
+Ground truth is the vendor \textbf{Genomic DNA \%} table (appropriate for
+shotgun read-count abundance). Evaluation uses 3M R1 reads per replicate
+(median 135\,bp); Bracken was run with \texttt{-r 150} against the custom
+catalogue database (only a 150-mer distribution was built). Abundance metrics
+renormalize predicted and expected fractions over the 11 in-set genera.
+Detection sensitivity counts a genus as detected if its renormalized predicted
+fraction is $\ge$1\%, restricted to genera with expected abundance $\ge$1\%
+(nine genera). Pearson bootstrap CIs resample the 11 genus pairs ($B{=}5000$).
+
+\begin{table}[h]
+\centering
+\caption{Per-replicate sample-level metrics (in-set renormalized).
+$r_{\ge1\%}$ = Pearson $r$ on the nine genera with expected abundance
+$\ge$1\%. Sens.\ uses the fixed definition above.}
+\small
+\begin{tabularx}{\linewidth}{@{}lcccccc@{}}
+\toprule
+Method & Rep & Pearson $r$ & Spearman $\rho$ & Bray--Curtis & $r_{\ge1\%}$ & Sens.\ \\
+\midrule
+NT-v2 6-mer & 1 & 0.420 & 0.338 & 0.376 & 0.569 & 0.778 \\
+NT-v2 6-mer & 2 & 0.403 & 0.338 & 0.392 & 0.565 & 0.889 \\
+MT 13-mer   & 1 & 0.545 & 0.439 & 0.344 & 0.610 & 0.778 \\
+MT 13-mer   & 2 & 0.530 & 0.439 & 0.362 & 0.606 & 0.778 \\
+Kraken\,2$+$Bracken & 1 & 0.580 & 0.572 & 0.437 & 0.620 & 0.556 \\
+Kraken\,2$+$Bracken & 2 & 0.576 & 0.572 & 0.431 & 0.622 & 0.556 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Per-genus renormalized abundance (\% of in-set mass; mean of two
+replicates). Expected is the Genomic DNA \% restricted to in-set genera and
+renormalized. Accessions: SRR33710519 (Rep1), SRR33710518 (Rep2).}
+\small
+\begin{tabularx}{\linewidth}{@{}Xcccc@{}}
+\toprule
+Genus & Expected & NT-v2 & MT 13-mer & Kraken\,2$+$Bracken \\
+\midrule
+Bacteroides      & 17.2 & 32.7 & 34.6 & 14.7 \\
+Roseburia        & 17.2 &  0.5 &  0.4 &  0.8 \\
+Faecalibacterium & 17.2 &  9.8 & 11.0 & 20.6 \\
+Veillonella      & 17.2 & 18.7 & 22.3 & 49.6 \\
+Prevotella       &  7.4 & 11.1 &  8.0 &  2.8 \\
+Fusobacterium    &  7.4 &  4.0 &  6.2 &  0.7 \\
+Lactobacillus    &  7.4 &  3.3 &  3.7 &  0.3 \\
+Bifidobacterium  &  7.4 &  1.3 &  1.3 &  2.4 \\
+Akkermansia      &  1.8 &  1.0 &  0.3 &  0.6 \\
+Enterococcus     &  0.0 &  0.1 &  0.3 &  0.0 \\
+Clostridium      &  0.0 & 17.5 & 11.8 &  7.5 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\noindent\textit{Notes.} (i)~Out-of-set taxa (18.5\% of DNA, chiefly
+\emph{Escherichia} 14\%) cannot be labelled correctly by any closed-set method.
+(ii)~\emph{Clostridioides difficile} (1.5\%) is treated as out-of-set; if the
+training catalogue used the older \emph{Clostridium difficile} name, part of the
+\emph{Clostridium} over-prediction is taxonomy rather than error.
+(iii)~Figure~\ref{fig:mock-genus} visualizes the same residuals.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=\linewidth]{mock_per_genus.pdf}
+\caption{Per-genus abundance on D6331 (mean of two replicates; in-set
+renormalized). Shared neural failure modes: missed \emph{Roseburia},
+\emph{Clostridium} attractor; Bracken strongly over-calls \emph{Veillonella}.}
+\label{fig:mock-genus}
+\end{figure}
+
 \end{document}

@@ -95,9 +95,10 @@ recovers it ($r=0.997$), so on in-database data a properly configured
 Kraken\,2$+$Bracken pipeline matches the neural models on abundance and remains
 the stronger detector---the distinct value of GFMs is read-level accuracy under a
 good tokenizer and behaviour outside the reference database, not sample-level
-abundance. On a real mock community, however, all methods (neural and
-Kraken\,2$+$Bracken) fall to $r\approx0.4$--$0.6$ with no clear winner, exposing
-a large closed-set-to-real gap that is the binding open problem.
+abundance. On a real mock community (two D6331 replicates), however, all methods
+(neural and Kraken\,2$+$Bracken) fall to $r\approx0.4$--$0.6$ with overlapping
+uncertainty and no clear winner, exposing a large closed-set-to-real gap that is
+the binding open problem.
 \textbf{Conclusion:} Tokenization design is the critical, and currently
 under-appreciated, factor for GFM-based metagenomic classification. We translate
 these findings into use-case-specific recommendations and argue that future
@@ -122,7 +123,8 @@ input), so the two factors are separable and both matter.
 \item Read-level accuracy and sample-level utility diverge: a 67\%-accurate read
 classifier reaches Pearson $r=0.99$ for genus abundance on simulated
 in-database samples, but that ranking does not transfer to a real mock
-community ($r\approx0.4$--$0.6$ for all methods, including Kraken\,2$+$Bracken).
+community (two D6331 replicates: $r\approx0.4$--$0.6$ for all methods, including
+Kraken\,2$+$Bracken, with overlapping uncertainty at $n{=}11$ genera).
 \item We give practical, use-case-specific recommendations and argue that future
 microbial foundation models should be pre-trained with overlapping long-$k$
 tokenization.
