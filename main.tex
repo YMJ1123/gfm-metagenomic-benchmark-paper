@@ -81,24 +81,18 @@ tokenization (6/12/13-mer, overlapping versus non-overlapping), and evaluation
 protocol (read-level accuracy, sample-level abundance estimation, and binary
 detection), and compare against the alignment-free classifier Kraken\,2.
 \textbf{Results:} Overlapping 13-mer tokenization, not backbone pre-training,
-determines the performance ceiling: an overlapping-13-mer model trained from
-scratch reaches 87.4\% genus Top-1 accuracy versus 67.1\% for a pre-trained
-6-mer model on identical 50M-read data. The 6-mer model saturates beyond 50M
-reads ($+0.22$ percentage points to 250M) while the 13-mer model keeps scaling
-(87.4\% to 98.7\%); the 6-mer model fails even to \emph{fit} its training set
-beyond $\sim$66\%, indicating a representational rather than an optimization
-ceiling. With tokenization fixed at 6-mer, pre-training contributes $+13.2$
-percentage points. At the sample level, under controlled synthetic compositions
-a 67\%-accurate read classifier attains Pearson $r=0.99$ for genus abundance;
-raw Kraken\,2 is deflated by its abstention ($r=0.82$) but Bracken re-estimation
-recovers it ($r=0.997$), so on in-database data a properly configured
-Kraken\,2$+$Bracken pipeline matches the neural models on abundance and remains
-the stronger detector---the distinct value of GFMs is read-level accuracy under a
-good tokenizer and behaviour outside the reference database, not sample-level
-abundance. On a real mock community (two D6331 replicates), however, all methods
-(neural and Kraken\,2$+$Bracken) fall to $r\approx0.4$--$0.6$ with overlapping
-uncertainty and no clear winner, exposing a large closed-set-to-real gap that is
-the binding open problem.
+sets the ceiling: a 13-mer model trained from scratch reaches 87.4\% genus Top-1
+versus 67.1\% for a pre-trained 6-mer model on identical 50M-read data, and it
+keeps scaling to 250M ($87.4\%\!\rightarrow\!98.7\%$) while the 6-mer model
+saturates ($+0.22$ pp) and cannot even \emph{fit} its training set beyond
+$\sim$66\%---a representational, not optimization, ceiling. With tokenization
+fixed, pre-training adds $+13.2$ pp. At the sample level a 67\%-accurate model
+reaches Pearson $r=0.99$ for genus abundance, but a properly configured
+Kraken\,2$+$Bracken pipeline matches it ($r=0.997$) and detects better; the
+distinct value of GFMs is read-level accuracy and behaviour outside the reference
+database, not abundance. On real mock-community data all methods fall to
+$r\approx0.4$--$0.6$ with no clear winner, exposing a large closed-set-to-real
+gap.
 \textbf{Conclusion:} Tokenization design is the critical, and currently
 under-appreciated, factor for GFM-based metagenomic classification. We translate
 these findings into use-case-specific recommendations and argue that future
