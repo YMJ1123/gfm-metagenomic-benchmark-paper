@@ -111,8 +111,10 @@ The single highest-leverage design choice is tokenization. Future microbial
 foundation models intended for short-read taxonomy should be \emph{pre-trained}
 with overlapping long-$k$ tokenization (e.g.\ 12--13-mers), combining the
 discriminative power that overlapping long $k$-mers provide with the
-representational quality that pre-training adds---the two independent gains we
-quantified ($+20$ pp from tokenization, $+13$ pp from pre-training). Because a
+representational quality that pre-training adds---two separable gains we
+quantified here (within one architecture, moving 6-mer$\to$13-mer is worth
+$\sim$$+39$ pp, while at matched 6-mer a pre-trained backbone adds $+13$--$20$ pp
+over training from scratch). Because a
 naive long-$k$ vocabulary is enormous (a 13-mer vocabulary implies a
 multi-billion-parameter embedding table; the ``$\sim$5M-parameter''
 MetaTransformer figure counts only the encoder and understates true cost),

@@ -69,6 +69,13 @@ Critically, tokenization also governs \emph{scalability}. As data grows from
 NT-v2; Section~\ref{sec:scaling}). A tokenizer that preserves enough local signal
 both raises the ceiling and keeps the model in the regime where more data helps.
 
+The practical implication is blunt, and we return to it in the recommendations
+(Section~\ref{sec:recommendations}): a pre-trained backbone helps, but if its
+tokenizer is fixed at non-overlapping 6-mer---as it is for most current
+GFMs---neither more pre-training nor more data lifts the ceiling. For this task
+the tokenizer, not backbone size, is the first property to check when choosing or
+building a GFM.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{backbone_ablation.pdf}
