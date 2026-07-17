@@ -80,13 +80,14 @@ simulated from a unified human-gut genome catalogue across 120 genera and
 tokenization (6/12/13-mer, overlapping versus non-overlapping), and evaluation
 protocol (read-level accuracy, sample-level abundance estimation, and binary
 detection), and compare against the alignment-free classifier Kraken\,2.
-\textbf{Results:} Overlapping 13-mer tokenization, not backbone pre-training,
-sets the ceiling: a 13-mer model trained from scratch reaches 87.4\% genus Top-1
-versus 67.1\% for a pre-trained 6-mer model on identical 50M-read data, and it
-keeps scaling to 250M ($87.4\%\!\rightarrow\!98.7\%$) while the 6-mer model
-saturates ($+0.22$ pp) and cannot even \emph{fit} its training set beyond
-$\sim$66\%---a representational, not optimization, ceiling. With tokenization
-fixed, pre-training adds $+13.2$ pp. At the sample level a 67\%-accurate model
+\textbf{Results:} Tokenization, not backbone pre-training, sets the ceiling:
+within one architecture (MetaTransformer, from scratch), changing a 6-mer
+tokenizer to an overlapping 13-mer raises genus Top-1 from 48.9\% to 87.4\% and
+keeps scaling to 98.7\% at 250M, whereas 6-mer models saturate ($+0.22$ pp) and
+cannot even \emph{fit} their training set beyond $\sim$66\%---a representational,
+not optimization, ceiling. At matched 6-mer a pre-trained backbone helps
+(67.1\% versus 47.0\%), but its tokenizer is fixed at 6-mer, so the ceiling
+resists more pre-training or data. At the sample level a 67\%-accurate model
 reaches Pearson $r=0.99$ for genus abundance, but a properly configured
 Kraken\,2$+$Bracken pipeline matches it ($r=0.997$) and detects better; the
 distinct value of GFMs is read-level accuracy and behaviour outside the reference
@@ -108,12 +109,13 @@ tokenization, benchmarking, short-read sequencing}
 250M reads yields almost no gain for a non-overlapping 6-mer model
 ($+0.22$ percentage points) but an 11-point gain for an overlapping 13-mer model
 ($87.4\%\!\rightarrow\!98.7\%$).
-\item Tokenization, not backbone pre-training, sets the performance ceiling: an
-overlapping 13-mer model trained from scratch reaches 87.4\% genus Top-1 versus
-67.1\% for a 498M-parameter pre-trained model under identical data.
-\item Pre-training still helps when tokenization is held fixed ($+13.2$
-percentage points over a randomly initialized backbone with the same 6-mer
-input), so the two factors are separable and both matter.
+\item Tokenization, not backbone pre-training, sets the performance ceiling:
+within one architecture, changing a 6-mer tokenizer to an overlapping 13-mer
+lifts genus Top-1 from 48.9\% to 87.4\%---a larger effect than pre-training, and
+one NT-v2 cannot access because its tokenizer is fixed at 6-mer.
+\item At matched 6-mer tokenization a pre-trained backbone still helps (NT-v2
+67.1\% versus 47.0\% for a from-scratch model), so pre-training and tokenization
+are separable and both matter.
 \item Read-level accuracy and sample-level utility diverge: a 67\%-accurate read
 classifier reaches Pearson $r=0.99$ for genus abundance on simulated
 in-database samples, but that ranking does not transfer to a real mock

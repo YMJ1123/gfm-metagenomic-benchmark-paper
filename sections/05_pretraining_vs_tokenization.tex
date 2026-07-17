@@ -2,154 +2,106 @@
 \label{sec:decomp}
 
 We now separate the two factors that a data-scaling curve alone cannot
-distinguish: the value of pre-training and the value of tokenization. The
-experiment is designed so that each can be isolated by changing exactly one
-variable.
+distinguish: the value of pre-training and the value of tokenization. Each is
+isolated by changing exactly one variable and comparing like with like
+(Figure~\ref{fig:ablation}).
 
-\subsection{Pre-training, at fixed tokenization, helps}
+\subsection{At matched tokenization, pre-training helps}
 
-Holding tokenization fixed at non-overlapping 6-mer and data fixed at 50M
-reads, we replace the pre-trained 29-layer NT-v2 backbone with a single-layer
-randomly initialized transformer. The pre-trained backbone reaches 67.07\%
-genus Top-1 versus 53.88\% for the random-initialized model---a $+13.19$ pp
-pre-training advantage (Figure~\ref{fig:ablation}). Pre-training on genomic
-sequence thus provides a real, transferable benefit for this task even though
-the pre-training corpus is not microbial. This is the strongest case for GFMs
-in metagenomics: the representation learned during pre-training is worth more
-than 13 accuracy points that no amount of extra 6-mer data recovers. This benefit
-is not specific to one backbone: across pre-trained GFMs fine-tuned identically at
-5M reads, NT-v2 was best (63.1\% genus Top-1) ahead of DNABERT (61.8\%) and
-DNABERT-2 (58.9\%), yet all three remained bounded well below the
-overlapping-13-mer ceiling---their (sub-)6-mer-scale tokenizers, not the choice of
-backbone, are the limiting factor (Supplementary).
+Holding tokenization fixed at non-overlapping 6-mer and data at 50M reads, we
+compare models. The 498M-parameter pre-trained NT-v2 reaches 67.07\% genus
+Top-1, versus 47.00\% for a MetaTransformer trained from scratch on the identical
+6-mer input, and 53.88\% for a single-layer randomly initialized transformer
+(Figure~\ref{fig:ablation}, left). At a fixed tokenizer, then, a large
+pre-trained backbone is worth roughly $+13$ to $+20$ pp over from-scratch models:
+accuracy that no amount of extra 6-mer data recovers. This is the strongest case
+for GFMs in metagenomics---the representation learned during pre-training
+transfers even though the corpus is not microbial. Because backbone architecture
+and capacity also differ across these systems, we read this as the benefit of a
+pre-trained large backbone rather than an isolated pre-training term. The benefit
+is not backbone-specific: across pre-trained GFMs fine-tuned identically at 5M
+reads, NT-v2 (63.1\%) leads DNABERT (61.8\%) and DNABERT-2 (58.9\%), yet all
+three stay far below the long-$k$ ceiling---their (sub-)6-mer-scale tokenizers,
+not the choice of backbone, are the limiting factor (Supplementary).
 
-\subsection{Tokenization, at fixed capacity, helps more}
+\subsection{Tokenization is the larger lever}
 
-Holding data fixed at 50M reads and training \emph{from scratch} (no
-pre-training on either side), we vary only the tokenizer within the
-MetaTransformer architecture. The effect dwarfs pre-training
-(Table~\ref{tab:tok}): overlapping 13-mer reaches 87.42\% genus Top-1 while
-overlapping 6-mer reaches only 48.87\% and non-overlapping 6-mer 47.00\%.
-The overlapping-13-mer model trained from scratch (87.42\%) outperforms the
-498M-parameter pre-trained NT-v2 with 6-mer tokenization (67.07\%) by
-$+20.35$ pp on identical data. In other words, changing the tokenizer buys more
-than changing from a shallow random network to a large pre-trained one. NT-v2's
-non-overlapping 6-mer tokenization is the principal structural limitation of
-the GFM approach here---not backbone capacity and not the adaptation strategy.
+The tokenizer, not the backbone, sets the ceiling. We isolate its effect
+\emph{within} the MetaTransformer architecture---trained from scratch, so nothing
+but the tokenizer changes. With a stride-1 overlapping tokenizer, moving from
+$k=6$ to $k=13$ raises genus Top-1 from 48.87\% to 87.42\%: a $+38.6$ pp swing
+from tokenization alone, on identical data and architecture
+(Figure~\ref{fig:ablation}, right; Table~\ref{tab:tok}). We report this
+comparison within MetaTransformer because NT-v2's tokenizer is fixed at
+non-overlapping 6-mer by its pre-trained vocabulary and cannot be re-tokenized to
+longer $k$; its 6-mer result (67.07\%) is the matched-tokenizer reference, and
+notably sits below even the from-scratch 13-mer model. Changing the tokenizer
+thus buys more than changing from a random network to a large pre-trained one.
 
 \begin{table*}[t]
 \centering
 \caption{\textbf{Tokenization governs both the ceiling and the ability to
-scale.} Genus Top-1 accuracy (120 classes). MetaTransformer (MT) rows are
-trained from scratch; NT-v2 is pre-trained. Only overlapping 13-mer reaches the
-high-80s/90s and continues to improve from 50M to 250M reads, whereas 6-mer
-representations plateau at 45--67\% regardless of pre-training or data. NT-v2
-values use reverse-complement test-time augmentation (RC-TTA); MT values are
-forward-only (RC-TTA adds $\sim$0.7 pp), so the tokenization gap is if anything
-slightly understated.}
+scale.} Genus Top-1 accuracy (120 classes) at 50M and 250M reads. The
+MetaTransformer (MT) rows share one from-scratch architecture, so across them
+\emph{only} the tokenizer changes; NT-v2 is pre-trained and fixed at
+non-overlapping 6-mer. Only overlapping 13-mer reaches the high-80s/90s and keeps
+improving with data, whereas every 6-mer representation plateaus at 45--67\%
+regardless of pre-training. NT-v2 uses reverse-complement test-time augmentation
+(RC-TTA); MT is forward-only (RC-TTA adds $\sim$0.7 pp), so the tokenization gap
+is if anything understated. The full tokenizer sweep (incl.\ 12-mer), train-fit,
+and non-neural baselines are in the Supplementary Material.}
 \label{tab:tok}
 \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lllcc@{}}
 \toprule
 Tokenizer & Overlap & Model & 50M & 250M \\
 \midrule
-13-mer & stride 1 (overlap)      & MT (scratch)      & 87.42\% & \textbf{98.7\%} \\
-12-mer & stride 1 (overlap)      & MT (scratch)      & 78.83\% & --- \\
-6-mer  & stride 1 (overlap)      & MT (scratch)      & 48.87\% & 50.6\% \\
-6-mer  & non-overlap (stride 6)  & MT (scratch)      & 47.00\% & 45.0\% \\
-6-mer  & non-overlap             & NT-v2 (pre-trained)& 67.07\% & 67.29\% \\
+13-mer & stride 1 (overlap)      & MT (scratch)        & 87.42\% & \textbf{98.7\%} \\
+6-mer  & stride 1 (overlap)      & MT (scratch)        & 48.87\% & 50.6\% \\
+6-mer  & non-overlap             & MT (scratch)        & 47.00\% & 45.0\% \\
+6-mer  & non-overlap             & NT-v2 (pre-trained) & 67.07\% & 67.29\% \\
 \botrule
 \end{tabular*}
 \end{table*}
 
 Critically, tokenization also governs \emph{scalability}. As data grows from
 50M to 250M, the overlapping-13-mer model improves by $+11$ pp
-($87.4\%\!\rightarrow\!98.7\%$) while the 6-mer NT-v2 is flat ($+0.22$ pp;
-Section~\ref{sec:scaling}). A tokenizer that preserves enough local signal both
-raises the ceiling and keeps the model in the regime where more data helps.
+($87.4\%\!\rightarrow\!98.7\%$) while every 6-mer model is flat ($+0.22$ pp for
+NT-v2; Section~\ref{sec:scaling}). A tokenizer that preserves enough local signal
+both raises the ceiling and keeps the model in the regime where more data helps.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{backbone_ablation.pdf}
-\caption{\textbf{Decomposing the sources of accuracy on a common 50M-read
-baseline.} Left to right: a randomly initialized shallow 6-mer model; the
-pre-trained NT-v2 6-mer model ($+13.2$ pp from pre-training, at fixed
-tokenization); and an overlapping-13-mer model trained from scratch
-($+20.4$ pp over pre-trained NT-v2, from tokenization alone). Tokenization is
-the larger lever.}
+\caption{\textbf{Two controlled comparisons at 50M reads.} \emph{Left:} at
+matched non-overlapping 6-mer, the pre-trained NT-v2 (67.1\%) beats a
+from-scratch MetaTransformer (47.0\%)---the pre-trained-backbone benefit.
+\emph{Right:} within the MetaTransformer architecture, changing only the
+tokenizer from 6-mer to overlapping 13-mer lifts accuracy from 48.9\% to 87.4\%.
+Tokenization is the larger lever, and because NT-v2's tokenizer is fixed at 6-mer
+this axis is explored within MetaTransformer.}
 \label{fig:ablation}
 \end{figure}
 
-\subsection{The ceiling is representational, not one of capacity or optimization}
-
-A natural objection is that the 6-mer model is simply under-trained or
-under-parameterized. The training-fit numbers refute this. The NT-v2 6-mer
-model cannot even \emph{fit} the training set past $\sim$66\% (250M warm-start:
-65.8\% train, 66.6\% validation---train and validation almost equal), whereas
-the 13-mer model fits training to 98.9\% and validates at 97.5\%. When a model
-cannot memorize the training data, the bottleneck is the input representation,
-not capacity, data, or generalization: the non-overlapping 6-mer tokens simply
-do not carry enough separable signal for a 150\,bp read.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{train_fit.pdf}
-\caption{\textbf{The ceiling is representational, not one of capacity.} Training
-versus validation genus accuracy. The 6-mer model cannot fit the training set
-past $\sim$66\% (train $\approx$ validation), whereas the overlapping-13-mer
-model fits to 98.9\%. A model that cannot memorize its training data is limited
-by its input representation, not by capacity or data.}
-\label{fig:trainfit}
-\end{figure}
-
-\subsection{Is the 13-mer result just closed-set lookup?}
+\subsection{The ceiling is representational, not disguised lookup}
 \label{sec:lookup}
 
-The obvious worry about a 98.7\% number is that a 13-mer model is performing
-disguised exact-match lookup against the reference---i.e.\ memorizing rather
-than generalizing. We tested this directly by building non-neural $k$-mer
-classifiers on the same 50M-read reference and the same test pool. A
-Kraken-style unique-key lookup achieves only 0.72\% (because $k=13$ is
-\emph{not} genus-unique: the $4^{13}=67.1$M 13-mer space is saturated by the
-1{,}535 genomes, so test 13-mers are almost all ``seen'' but only $\sim$0.4\%
-map to a single genus). A dominant-genus majority vote reaches 35.3\%, and a
-full multinomial $k$-mer naive Bayes---using $P(k\text{-mer}\mid\text{genus})$
-without any neural network---reaches 74.9\%. The MT 13-mer network adds a
-further $+13$ pp over naive Bayes (87.4\%), capturing co-occurrence structure
-beyond the naive-Bayes independence assumption. The mechanism is therefore
-learned high-dimensional composition, \emph{not} exact-match lookup
-(Figure~\ref{fig:kmer}).
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{kmer_baselines.pdf}
-\caption{\textbf{Tokenization dominates the model.} Genus Top-1 accuracy with
-the classifier held fixed---a non-neural multinomial $k$-mer naive Bayes---or
-as a neural network, for 6-mer versus overlapping 13-mer tokenization (same
-50M-read reference and test pool). With the method fixed, moving to 13-mer nearly
-triples accuracy ($25.9\%\!\rightarrow\!74.9\%$), isolating $k$-mer length as the
-decisive variable; the neural gain is larger on the weaker tokenizer ($+41$ pp on
-6-mer versus $+13$ pp on 13-mer). The non-neural 13-mer naive Bayes (74.9\%)
-already exceeds the 498M-parameter pre-trained NT-v2 on 6-mer (67\%). Exact-match
-unique-key lookup fails (0.7\%), confirming this is learned composition, not
-lookup.}
-\label{fig:kmer}
-\end{figure}
-
-This analysis also isolates $k$-mer length as the decisive variable. Holding the
-classifier fixed and applying the same multinomial naive Bayes to 6-mer
-composition (NT-v2's tokenization) yields only 25.9\%: moving from 6-mer to
-13-mer alone nearly triples accuracy ($25.9\%\!\rightarrow\!74.9\%$) with no
-change to the model. Conversely, the neural network contributes \emph{more} when
-the tokenizer is weaker---it adds $+41$ pp on 6-mer (25.9\% naive Bayes to 67.0\%
-for the 498M-parameter NT-v2) but only $+13$ pp on 13-mer (74.9\% to 87.4\%)---so
-a poorer input representation forces the model to work harder to recover the same
-signal. Most strikingly, the non-neural 13-mer naive Bayes (74.9\%) still
-\emph{beats} the pre-trained 498M-parameter NT-v2 on 6-mer (67\%): no amount of
-capacity or pre-training on 6-mer catches trivial statistics on 13-mer.
-Representation ($k$-mer length) is more decisive than model capacity or
-pre-training. We are explicit about the accompanying caveat: because the
-reference genomes are nearly
-completely covered by the test organisms, the 98.7\% figure characterizes
-\emph{closed-set} classification against known genomes; novel-genome
-generalization is a separate question that we flag as the primary limitation
-(Section~\ref{sec:limitations}).
+Two objections to this picture deserve a direct answer; we summarise here and
+give the full analysis in the Supplementary Material. First, the 6-mer model is
+not merely under-trained: it cannot even \emph{fit} its training set past
+$\sim$66\% (250M warm-start: 65.8\% train vs 66.6\% validation), whereas the
+13-mer model fits training to 98.9\%. When a model cannot memorize the data, the
+bottleneck is the input representation, not capacity or optimization---the
+non-overlapping 6-mer tokens simply do not carry enough separable signal for a
+150\,bp read. Second, the 13-mer result is not disguised exact-match lookup: a
+Kraken-style unique-key lookup scores only 0.72\% (the $4^{13}$ 13-mer space is
+saturated by the reference, so test 13-mers are almost all ``seen'' but only
+$\sim$0.4\% map to a single genus), a multinomial $k$-mer naive Bayes reaches
+74.9\%, and the neural network adds a further $+13$ pp---learned high-dimensional
+composition, not memorization. Applying the same naive Bayes to 6-mer composition
+yields only 25.9\%, isolating $k$-mer \emph{length} as the decisive variable, and
+the non-neural 13-mer naive Bayes (74.9\%) already exceeds the 498M-parameter
+NT-v2 on 6-mer (67\%). We are explicit about the accompanying caveat: because the
+reference genomes are nearly fully covered by the test organisms, the 98.7\%
+figure characterizes \emph{closed-set} classification against known genomes;
+novel-genome generalization is a separate question we flag as the primary
+limitation (Section~\ref{sec:limitations}).

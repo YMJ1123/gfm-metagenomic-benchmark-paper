@@ -55,29 +55,36 @@ def fig_data_scaling():
 #   shallow-random(6mer)  ->  NT-v2 pretrained(6mer)  ->  MT 13-mer(scratch)
 # ----------------------------------------------------------------------
 def fig_backbone_ablation():
-    labels = ["Random init\n(1-layer, 6-mer)",
-              "NT-v2 pre-trained\n(6-mer)",
-              "MT from scratch\n(overlap 13-mer)"]
-    vals   = [53.88, 67.07, 87.42]
-    colors = [LGREY, BLUE, TEAL]
-    fig, ax = plt.subplots(figsize=(3.7, 2.9))
-    x = np.arange(3)
-    bars = ax.bar(x, vals, color=colors, width=0.62, zorder=3)
-    for b, v in zip(bars, vals):
-        ax.text(b.get_x()+b.get_width()/2, v+1, f"{v:.1f}", ha="center",
-                va="bottom", fontsize=8)
-    # delta arrows
-    ax.annotate("", xy=(1, 67.07), xytext=(0, 53.88),
+    # Two controlled comparisons at 50M reads, each changing ONE factor:
+    #  (A) matched non-overlapping 6-mer, vary the model (pre-training/backbone)
+    #  (B) within MetaTransformer (stride-1 overlap), vary the tokenizer k
+    xA = [0.0, 1.0]
+    xB = [2.6, 3.6]
+    valsA = [47.00, 67.07]     # MT 6-mer (scratch)  vs  NT-v2 6-mer (pre-trained)
+    valsB = [48.87, 87.42]     # MT 6-mer (scratch)  vs  MT 13-mer (scratch)
+    fig, ax = plt.subplots(figsize=(4.4, 3.0))
+    ax.bar(xA, valsA, color=[ORANGE, BLUE], width=0.72, zorder=3)
+    ax.bar(xB, valsB, color=[ORANGE, TEAL], width=0.72, zorder=3)
+    for x, v in zip(xA + xB, valsA + valsB):
+        ax.text(x, v + 1.2, f"{v:.1f}", ha="center", va="bottom", fontsize=8)
+    # delta arrows within each matched group
+    ax.annotate("", xy=(1.0, 67.07), xytext=(0.0, 47.00),
                 arrowprops=dict(arrowstyle="->", color="#333", lw=1.0))
-    ax.text(0.5, 61.5, "+13.2 pp\npre-training", ha="center", fontsize=7.5)
-    ax.annotate("", xy=(2, 87.42), xytext=(1, 67.07),
+    ax.text(0.5, 50.5, "+20 pp\npre-training\n+ backbone", ha="center", va="top", fontsize=6.8)
+    ax.annotate("", xy=(3.6, 87.42), xytext=(2.6, 48.87),
                 arrowprops=dict(arrowstyle="->", color="#333", lw=1.0))
-    ax.text(1.5, 78.5, "+20.4 pp\ntokenization", ha="center", fontsize=7.5)
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=7.5)
+    ax.text(2.18, 86, "+39 pp\ntokenization\n(k: 6$\\to$13)", ha="left", va="top", fontsize=6.8)
+    ax.set_xticks(xA + xB)
+    ax.set_xticklabels(["MT 6-mer\n(scratch)", "NT-v2 6-mer\n(pre-trained)",
+                        "MT 6-mer\n(scratch)", "MT 13-mer\n(scratch)"], fontsize=6.8)
     ax.set_ylabel("Genus Top-1 accuracy (%)")
-    ax.set_title("Sources of accuracy at fixed 50M reads")
-    ax.set_ylim(0, 100)
+    ax.set_ylim(0, 104)
+    ax.set_title("Two controlled comparisons at 50M reads")
+    # group captions
+    ax.text(0.5, 101, "Matched 6-mer\n(vary model)", ha="center", va="top",
+            fontsize=7, fontweight="bold", color="#555")
+    ax.text(3.1, 101, "Within MetaTransformer\n(vary tokenizer)", ha="center", va="top",
+            fontsize=7, fontweight="bold", color="#555")
     save(fig, "backbone_ablation.pdf")
 
 

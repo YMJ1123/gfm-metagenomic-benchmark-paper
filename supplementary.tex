@@ -172,6 +172,15 @@ MT 13-mer 250M     & 98.9\% & 97.5\% \\
 \end{tabularx}
 \end{table}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.72\linewidth]{train_fit.pdf}
+\caption{Training versus validation genus accuracy. The 6-mer model cannot fit
+the training set past $\sim$66\% (train $\approx$ validation), whereas the
+overlapping-13-mer model fits to 98.9\%. A model that cannot memorize its
+training data is limited by its input representation, not by capacity or data.}
+\end{figure}
+
 \section{Is 13-mer just lookup? Non-neural baselines}
 \begin{table}[h]
 \centering
@@ -198,6 +207,19 @@ Neural network & --- & 67.0\textsuperscript{a} & 87.4\textsuperscript{b} \\
 {\footnotesize \textsuperscript{a}498M-parameter pre-trained NT-v2 + LoRA.\quad
 \textsuperscript{b}MetaTransformer, from scratch.}
 \end{table}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.82\linewidth]{kmer_baselines.pdf}
+\caption{Genus Top-1 accuracy with the classifier held fixed (non-neural
+multinomial $k$-mer naive Bayes) or as a neural network, for 6-mer versus
+overlapping 13-mer tokenization on the same 50M-read reference and test pool.
+Holding the method fixed, moving to 13-mer nearly triples accuracy
+($25.9\%\!\rightarrow\!74.9\%$), isolating $k$-mer length as the decisive
+variable; the non-neural 13-mer naive Bayes (74.9\%) already exceeds the
+498M-parameter NT-v2 on 6-mer (67\%). Exact-match unique-key lookup fails
+(0.7\%), confirming learned composition rather than lookup.}
+\end{figure}
 
 \section{Computational cost}
 \begin{figure}[h]
